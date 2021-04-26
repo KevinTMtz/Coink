@@ -1,0 +1,13 @@
+{
+  "name": "financial-manager",
+  "version": "1.0.0",
+  "description": "Personal financial manager",
+  "main": "index.js",
+  "repository": "https://github.com/KevinTMtz/FinancialManager.git",
+  "author": "KevinTMtz <torresmtzkevin@gmail.com>",
+  "contributors": [
+    "MarioJim <mario.emilio.j@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": false
+}
