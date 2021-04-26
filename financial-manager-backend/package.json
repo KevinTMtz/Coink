@@ -6,8 +6,19 @@
   "repository": "https://github.com/KevinTMtz/FinancialManager.git",
   "author": "KevinTMtz <torresmtzkevin@gmail.com>",
   "contributors": [
-    "MarioJim <mario.emilio.j@gmail.com>"
+    "MarioJim <mario.emilio.j@gmail.com>",
+    "SebasRod23 <sebastian_rodriguezg@yahoo.com>"
   ],
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.6"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  }
 }
