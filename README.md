@@ -9,8 +9,8 @@ Final project for Web Applications
 
 ## Tech stack
 
-- HTML5 and CSS: frontend
-- Node.js and Express: backend
+- React: frontend
+- Next.js API routes: API
 - MongoDB: database
 
 ## Team
