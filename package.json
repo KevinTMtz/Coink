@@ -2,12 +2,23 @@
   "name": "financial-manager",
   "version": "1.0.0",
   "description": "Personal financial manager",
-  "main": "index.js",
   "repository": "https://github.com/KevinTMtz/FinancialManager.git",
   "author": "KevinTMtz <torresmtzkevin@gmail.com>",
   "contributors": [
-    "MarioJim <mario.emilio.j@gmail.com>"
+    "MarioJim <mario.emilio.j@gmail.com>",
+    "SebasRod23 <sebastian_rodriguezg@yahoo.com>"
   ],
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "mongodb": "^3.5.9",
+    "next": "latest",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
   "license": "MIT",
   "private": false
 }
