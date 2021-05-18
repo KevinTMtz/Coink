@@ -1,0 +1,30 @@
+{
+  "name": "coink-backend",
+  "version": "1.0.0",
+  "description": "Personal financial manager",
+  "repository": "https://github.com/KevinTMtz/coink.git",
+  "author": "KevinTMtz <torresmtzkevin@gmail.com>",
+  "contributors": [
+    "MarioJim <mario.emilio.j@gmail.com>",
+    "SebasRod23 <sebastian_rodriguezg@yahoo.com>"
+  ],
+  "scripts": {
+    "start": "ts-node src/main.ts"
+  },
+  "dependencies": {
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.6",
+    "mongoose": "^5.12.9",
+    "ts-node": "^9.1.1"
+  },
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/mongodb": "^3.6.12",
+    "@types/mongoose": "^5.10.5",
+    "@types/node": "^15.0.2",
+    "typescript": "^4.2.4"
+  }
+}
