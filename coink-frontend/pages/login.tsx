@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Input, Spacer, Text } from '@geist-ui/react';
+import { Button, Card, Input, Spacer } from '@geist-ui/react';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
