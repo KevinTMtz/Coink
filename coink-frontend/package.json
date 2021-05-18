@@ -1,8 +1,8 @@
 {
-  "name": "financial-manager",
+  "name": "coink-frontend",
   "version": "1.0.0",
   "description": "Personal financial manager",
-  "repository": "https://github.com/KevinTMtz/FinancialManager.git",
+  "repository": "https://github.com/KevinTMtz/coink.git",
   "author": "KevinTMtz <torresmtzkevin@gmail.com>",
   "contributors": [
     "MarioJim <mario.emilio.j@gmail.com>",
@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@geist-ui/react": "^2.1.5",
-    "mongodb": "^3.6.6",
     "next": "^10.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
@@ -23,7 +22,6 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "@types/mongodb": "^3.6.12",
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.5",
     "typescript": "^4.2.4"
