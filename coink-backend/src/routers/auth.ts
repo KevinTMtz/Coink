@@ -51,4 +51,9 @@ router.post(
   },
 );
 
+router.get('/logout', async (req: Request, res: Response) => {
+  req.session.destroy(() => {});
+  res.redirect('/login');
+});
+
 export default router;
