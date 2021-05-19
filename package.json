@@ -10,8 +10,10 @@
   ],
   "scripts": {
     "dev": "ts-node --project tsconfig.server.json server/main.ts",
-    "build": "next build",
-    "start": "NODE_ENV=production ts-node --project tsconfig.server.json server/main.ts"
+    "build:server": "tsc --project tsconfig.server.json",
+    "build:next": "next build",
+    "build": "yarn build:next && yarn build:server",
+    "start": "NODE_ENV=production node dist/main.js"
   },
   "dependencies": {
     "@geist-ui/react": "^2.1.5",

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "lib": ["esnext"],
     "module": "commonjs",
+    "noEmit": false,
     "outDir": "dist"
   },
   "include": ["server"]
