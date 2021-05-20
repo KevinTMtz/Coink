@@ -2,28 +2,29 @@ import bcrypt from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
+import isAuthenticated from '../middleware/isAuthenticated';
 import User from '../models/User';
 
 const router = Router();
 
 router.post(
   '/login',
-  body('email').isEmail(),
-  body('password').isLength({ min: 6 }),
+  body('email').isString(),
+  body('password').isString(),
   async (req: Request, res: Response) => {
     if (!validationResult(req).isEmpty()) {
       return res.sendStatus(400);
     }
     const user = await User.findOne({ email: req.body.email }).exec();
     if (user === null) {
-      return res.sendStatus(404);
+      return res.send({ error: 'No existe una cuenta con ese correo' });
     }
     const passwordsMatch = await bcrypt.compare(
       req.body.password,
       user.password,
     );
     if (!passwordsMatch) {
-      return res.send('Invalid credentials');
+      return res.send({ error: 'Contraseña incorrecta' });
     }
     req.session.user = user.id;
     res.redirect('/dashboard');
@@ -40,20 +41,27 @@ router.post(
     }
     const user = await User.findOne({ email: req.body.email }).exec();
     if (user !== null) {
-      return res.send('An account with that email already exists');
+      return res.send({ error: 'Ya existe una cuenta con ese correo' });
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
-    await User.create({
+    const newUser = await User.create({
       email: req.body.email,
       password: hashedPassword,
     });
-    res.redirect('/login');
+    req.session.user = newUser.id;
+    res.redirect('/dashboard');
   },
 );
 
 router.get('/logout', async (req: Request, res: Response) => {
-  req.session.destroy(() => {});
+  await new Promise<void>((resolve, reject) =>
+    req.session.destroy((err) => (err ? reject(err) : resolve())),
+  );
   res.redirect('/login');
+});
+
+router.get('/hello', isAuthenticated, async (req: Request, res: Response) => {
+  res.send({ user: req.session.user });
 });
 
 export default router;
