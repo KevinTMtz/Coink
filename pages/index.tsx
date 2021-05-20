@@ -1,7 +1,10 @@
-import React from 'react';
+import React from "react";
+import { css } from "@emotion/react";
+
+const sth = css({});
 
 const HomePage: React.FC = () => (
-  <div className="container">
+  <div className="container" css={sth}>
     <main>
       <h1 className="title">
         Welcome to <b>coink</b>
