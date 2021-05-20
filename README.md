@@ -1,3 +1,8 @@
+<p align="center" margin="128">
+  <br/>
+  <img width="64" src="./public/coinkLogo.svg">
+</p>
+
 # coink
 
 ![GitHub top language](https://img.shields.io/github/languages/top/KevinTMtz/coink)
