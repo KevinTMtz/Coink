@@ -9,6 +9,7 @@ const DashboardPage: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
+    // TODO: Borrar, es sólo ejemplo de getRequest
     getRequest('/api/auth/hello', router).then((res) => setUser(res.user));
   }, []);
   return (

@@ -60,6 +60,7 @@ router.get('/logout', async (req: Request, res: Response) => {
   res.redirect('/login');
 });
 
+// TODO: Borrar, es sólo ejemplo de isAuthenticated
 router.get('/hello', isAuthenticated, async (req: Request, res: Response) => {
   res.send({ user: req.session.user });
 });
