@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Button, Card, Input, Row, Spacer, Text } from '@geist-ui/react';
+import { Button, Card, Grid, Input, Row, Spacer, Text } from '@geist-ui/react';
 import isEmail from 'validator/lib/isEmail';
 import isLength from 'validator/lib/isLength';
 
@@ -38,8 +38,12 @@ const LoginPage: React.FC = () => {
       <Head>
         <title>{view === 'login' ? 'Inicia sesión' : 'Regístrate'}</title>
       </Head>
-      <div className="container">
-        <Card shadow>
+      <Grid.Container
+        justify="center"
+        alignItems="center"
+        style={{ minHeight: '100vh', padding: '0 0.5rem' }}
+      >
+        <Card shadow width="auto">
           <Row justify="space-around">
             <Text
               h3
@@ -48,6 +52,7 @@ const LoginPage: React.FC = () => {
                 setView('login');
                 setErrorMsg('');
               }}
+              style={{ fontWeight: 400, cursor: 'pointer' }}
             >
               Inicia sesión
             </Text>
@@ -58,6 +63,7 @@ const LoginPage: React.FC = () => {
                 setView('register');
                 setErrorMsg('');
               }}
+              style={{ fontWeight: 400, cursor: 'pointer' }}
             >
               Regístrate
             </Text>
@@ -81,7 +87,14 @@ const LoginPage: React.FC = () => {
           </Input>
           <Spacer y={0.5} />
           {errorMsg && (
-            <Text type="error" className="error-msg">
+            <Text
+              type="error"
+              style={{
+                margin: '0 auto',
+                maxWidth: '220px',
+                textAlign: 'center',
+              }}
+            >
               {errorMsg}
             </Text>
           )}
@@ -91,43 +104,7 @@ const LoginPage: React.FC = () => {
           </Button>
           <Spacer y={0.5} />
         </Card>
-
-        <style jsx global>{`
-          .container {
-            min-height: 100vh;
-            padding: 0 0.5rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-          }
-
-          div.card {
-            width: auto !important;
-          }
-
-          div.content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-          }
-
-          h3 {
-            font-weight: 400;
-            cursor: pointer;
-          }
-
-          p.error-msg {
-            margin: 0 auto;
-            max-width: 220px;
-            text-align: center;
-          }
-
-          * {
-            box-sizing: border-box;
-          }
-        `}</style>
-      </div>
+      </Grid.Container>
     </>
   );
 };
