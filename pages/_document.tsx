@@ -5,14 +5,18 @@ import { Global } from '@emotion/react';
 class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en" style={{ padding: 0, margin: 0 }}>
+      <Html lang='en' style={{ padding: 0, margin: 0 }}>
         <Head>
-          <meta name="description" content="Personal financial manager" />
-          <link rel="icon" href="/favicon.ico" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" />
+          <meta name='description' content='Personal financial manager' />
+          <link rel='icon' href='/favicon.ico' />
+          <link rel='preconnect' href='https://fonts.gstatic.com' />
           <link
-            href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@200;300;400&display=swap"
-            rel="stylesheet"
+            href='https://fonts.googleapis.com/css2?family=Work+Sans:wght@200;300;400&display=swap'
+            rel='stylesheet'
+          />
+          <link
+            rel='stylesheet'
+            href='https://cdnjs.cloudflare.com/ajax/libs/react-datepicker/2.14.1/react-datepicker.min.css'
           />
         </Head>
 

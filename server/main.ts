@@ -63,7 +63,7 @@ const handle = app.getRequestHandler();
   server.use('/api/auth', authRouter);
 
   // Transactions router
-  server.use('/api/trans', transRouter);
+  server.use('/api/transaction', transRouter);
 
   // Transactions router
   server.use('/api/stats', statsRouter);

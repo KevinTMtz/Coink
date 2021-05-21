@@ -6,33 +6,43 @@ import isAuthenticated from '../middleware/isAuthenticated';
 
 const router = Router();
 
-router.post('/add', isAuthenticated, async (req: Request, res: Response) => {
-  if (req.body.id === undefined) {
-    const newTrans = await Transaction.create({
-      name: req.body.name,
-      userId: req.session.user,
-      comments: req.body.comments,
-      amount: req.body.amount,
-      date: req.body.date,
-      type: req.body.type,
-      category: req.body.category,
-    });
-    res.sendStatus(200);
-  } else {
-    const trans = await Transaction.findOneAndUpdate(
-      { _id: req.body.id, userId: req.session.user },
-      {
+router.post(
+  '/add',
+  body('name').isString,
+  body('comments').isString,
+  body('amount').isNumeric,
+  body('date').isDate,
+  body('type').isString,
+  body('category').isString,
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    if (req.body.id === undefined) {
+      await Transaction.create({
         name: req.body.name,
+        userId: req.session.user,
         comments: req.body.comments,
         amount: req.body.amount,
         date: req.body.date,
         type: req.body.type,
         category: req.body.category,
-      },
-    );
-    res.sendStatus(200);
-  }
-});
+      });
+      res.sendStatus(200);
+    } else {
+      await Transaction.findOneAndUpdate(
+        { _id: req.body.id, userId: req.session.user },
+        {
+          name: req.body.name,
+          comments: req.body.comments,
+          amount: req.body.amount,
+          date: req.body.date,
+          type: req.body.type,
+          category: req.body.category,
+        },
+      );
+      res.sendStatus(200);
+    }
+  },
+);
 
 router.post(
   '/delete',
@@ -46,6 +56,7 @@ router.post(
     res.sendStatus(200);
   },
 );
+
 router.get('/', isAuthenticated, async (req: Request, res: Response) => {
   const list = await Transaction.find(
     { userId: req.session.user },
@@ -62,4 +73,5 @@ router.get('/', isAuthenticated, async (req: Request, res: Response) => {
 
   res.send(list);
 });
+
 export default router;
