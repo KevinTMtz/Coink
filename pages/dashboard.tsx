@@ -17,6 +17,7 @@ const DashboardPage: React.FC = () => {
       setLoading(false);
     });
   }, []);
+
   return (
     <>
       <Head>

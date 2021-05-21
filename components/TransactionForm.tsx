@@ -17,6 +17,8 @@ import isLength from 'validator/lib/isLength';
 import isNumeric from 'validator/lib/isNumeric';
 import ReactDatePicker from 'react-datepicker';
 
+import { postRequest } from '../lib/fetch';
+
 type operationType = 'add' | 'edit';
 
 interface TransactionFormProps {
@@ -58,7 +60,7 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
 
   useEffect(() => {
     if (operation === 'edit' && transactionID) {
-      // Get transaction info
+      // TODO: Get transaction info
     }
   }, [transactionID]);
 
@@ -94,21 +96,23 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
       id,
     };
 
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    const resBody = await postRequest(apiUrl, body, router);
+    if (resBody?.error) {
+      setErrorMsg(resBody.error);
+    }
   };
 
-  const cancelOperation = () => {};
+  const cancelOperation = () => {
+    // TODO: Return to last page
+  };
 
   return (
     <>
       <Head>
-        <title>{`${operation === 'add' ? 'Añadir' : 'Editar'} ${
-          type === 'income' ? 'ingreso' : 'gasto'
-        }`}</title>
+        <title>
+          {operation === 'add' ? 'Añadir' : 'Editar'}
+          {type === 'income' ? ' ingreso' : ' gasto'}
+        </title>
       </Head>
       <Grid.Container
         justify='center'
@@ -128,6 +132,7 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
                 type={type === 'income' ? 'success' : 'secondary'}
                 onClick={() => {
                   setType('income');
+                  setCategory('');
                   setErrorMsg('');
                 }}
                 style={{ fontWeight: 400, cursor: 'pointer' }}
@@ -139,6 +144,7 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
                 type={type === 'expense' ? 'success' : 'secondary'}
                 onClick={() => {
                   setType('expense');
+                  setCategory('');
                   setErrorMsg('');
                 }}
                 style={{ fontWeight: 400, cursor: 'pointer' }}
@@ -161,6 +167,7 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
             width='100%'
             placeholder='Seleccionar'
             onChange={categoryHandler}
+            value={category}
           >
             {Object.keys(categoriesMap).map((key, index) => (
               <Select.Option value={key} key={index}>
