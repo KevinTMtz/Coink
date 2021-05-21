@@ -8,14 +8,21 @@ const router = Router();
 
 router.post(
   '/add',
-  body('name').isString,
-  body('comments').isString,
-  body('amount').isNumeric,
-  body('date').isDate,
-  body('type').isString,
-  body('category').isString,
+  body('name').isString(),
+  body('comments').isString(),
+  body('amount').isNumeric(),
+  body('date').isString(),
+  body('type').isString(),
+  body('category').isString(),
   isAuthenticated,
   async (req: Request, res: Response) => {
+    if (!validationResult(req).isEmpty()) {
+      return res.sendStatus(400);
+    }
+    if (Number.isNaN(new Date(req.body.date))) {
+      return res.send({ error: 'Fecha inválida' });
+    }
+
     if (req.body.id === undefined) {
       await Transaction.create({
         name: req.body.name,
@@ -26,7 +33,7 @@ router.post(
         type: req.body.type,
         category: req.body.category,
       });
-      res.sendStatus(200);
+      res.send({ message: 'Add successful' });
     } else {
       await Transaction.findOneAndUpdate(
         { _id: req.body.id, userId: req.session.user },
@@ -39,7 +46,7 @@ router.post(
           category: req.body.category,
         },
       );
-      res.sendStatus(200);
+      res.send({ message: 'Edit successful' });
     }
   },
 );
