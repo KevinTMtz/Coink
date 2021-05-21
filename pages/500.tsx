@@ -11,9 +11,9 @@ const Error500Page: React.FC = () => (
       <title>404</title>
     </Head>
     <Grid.Container
-      justify="center"
-      direction="column"
-      alignItems="center"
+      justify='center'
+      direction='column'
+      alignItems='center'
       style={{ minHeight: '100vh', padding: '5rem 0.5rem' }}
     >
       <Title>Error 500</Title>
