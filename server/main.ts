@@ -17,6 +17,7 @@ const port = parseInt(process.env.PORT || '', 10) || 3000;
 
 import authRouter from './routers/auth';
 import transRouter from './routers/transactions';
+import statsRouter from './routers/stats';
 // TODO: Delete import
 import { createSampleData } from './sampleData';
 
@@ -63,6 +64,9 @@ const handle = app.getRequestHandler();
 
   // Transactions router
   server.use('/api/trans', transRouter);
+
+  // Transactions router
+  server.use('/api/stats', statsRouter);
 
   // Handle routes with next.js
   server.all('*', (req, res) => handle(req, res));
