@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import isAuthenticated from '../middleware/isAuthenticated';
 import User from '../models/User';
 
 const router = Router();
@@ -58,11 +57,6 @@ router.get('/logout', async (req: Request, res: Response) => {
     req.session.destroy((err) => (err ? reject(err) : resolve())),
   );
   res.redirect('/login');
-});
-
-// TODO: Borrar, es sólo ejemplo de isAuthenticated
-router.get('/hello', isAuthenticated, async (req: Request, res: Response) => {
-  res.send({ user: req.session.user });
 });
 
 export default router;
