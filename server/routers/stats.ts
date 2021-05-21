@@ -37,6 +37,14 @@ router.get('/incomes', isAuthenticated, async (req: Request, res: Response) => {
   res.send(list);
 });
 
+interface DataPoints {
+  dates: Date[];
+  incomeAmounts: number[];
+  incomeCounts: number[];
+  expenseAmounts: number[];
+  expenseCounts: number[];
+}
+
 router.get(
   '/timeline',
   isAuthenticated,
@@ -54,7 +62,11 @@ router.get(
         { year: today.getFullYear() - 1, month: { $gt: today.getMonth() + 1 } },
       ],
     };
-    const grouping = { _id: '$month', total: { $sum: '$amount' } };
+    const grouping = {
+      _id: '$month',
+      count: { $sum: 1 },
+      total: { $sum: '$amount' },
+    };
     const [incomes, expenses] = await Promise.all([
       Transaction.aggregate([
         { $match: { userId: req.session.user, type: 'income' } },
@@ -69,21 +81,41 @@ router.get(
         { $group: grouping },
       ]),
     ]);
-    console.log(incomes, expenses);
 
-    const dates = Array.from({ length: 12 }, (_, i) => 11 - i)
+    const datapoints = Array.from({ length: 12 }, (_, i) => 11 - i)
       .map(
         (monthDecrement) =>
           new Date(today.getFullYear(), today.getMonth() - monthDecrement, 1),
       )
       .map((date) => ({
         date,
-        income: incomes.find((i) => i._id === date.getMonth() + 1)?.total || 0,
-        expense:
+        numIncomes:
+          incomes.find((i) => i._id === date.getMonth() + 1)?.count || 0,
+        totalIncome:
+          incomes.find((i) => i._id === date.getMonth() + 1)?.total || 0,
+        numExpenses:
+          expenses.find((i) => i._id === date.getMonth() + 1)?.count || 0,
+        totalExpense:
           expenses.find((i) => i._id === date.getMonth() + 1)?.total || 0,
-      }));
+      }))
+      .reduce<DataPoints>(
+        (acc, val) => ({
+          dates: [...acc.dates, val.date],
+          incomeCounts: [...acc.incomeCounts, val.numIncomes],
+          incomeAmounts: [...acc.incomeAmounts, val.totalIncome],
+          expenseCounts: [...acc.expenseCounts, val.numExpenses],
+          expenseAmounts: [...acc.expenseAmounts, val.totalExpense],
+        }),
+        {
+          dates: [],
+          incomeCounts: [],
+          incomeAmounts: [],
+          expenseCounts: [],
+          expenseAmounts: [],
+        },
+      );
 
-    res.send(dates);
+    res.send(datapoints);
   },
 );
 
