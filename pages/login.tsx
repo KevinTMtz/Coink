@@ -39,12 +39,12 @@ const LoginPage: React.FC = () => {
         <title>{view === 'login' ? 'Inicia sesión' : 'Regístrate'}</title>
       </Head>
       <Grid.Container
-        justify="center"
-        alignItems="center"
+        justify='center'
+        alignItems='center'
         style={{ minHeight: '100vh', padding: '0 0.5rem' }}
       >
-        <Card shadow width="auto">
-          <Row justify="space-around">
+        <Card shadow width='auto'>
+          <Row justify='space-around'>
             <Text
               h3
               type={view === 'login' ? 'success' : 'secondary'}
@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
           </Row>
           <Spacer y={0.5} />
           <Input
-            size="large"
+            size='large'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           >
@@ -78,8 +78,8 @@ const LoginPage: React.FC = () => {
           </Input>
           <Spacer />
           <Input
-            size="large"
-            type="password"
+            size='large'
+            type='password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           >
@@ -88,7 +88,7 @@ const LoginPage: React.FC = () => {
           <Spacer y={0.5} />
           {errorMsg && (
             <Text
-              type="error"
+              type='error'
               style={{
                 margin: '0 auto',
                 maxWidth: '220px',
@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
             </Text>
           )}
           <Spacer y={0.5} />
-          <Button type="success-light" size="large" onClick={login}>
+          <Button type='success-light' size='large' onClick={login}>
             {view === 'login' ? 'Iniciar sesión' : 'Regístrate'}
           </Button>
           <Spacer y={0.5} />
