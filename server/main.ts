@@ -57,7 +57,7 @@ const handle = app.getRequestHandler();
   server.use('/api/auth', authRouter);
 
   // Transactions router
-  server.use('/api/trans', transRouter);
+  server.use('/api/transaction', transRouter);
 
   // Handle routes with next.js
   server.all('*', (req, res) => handle(req, res));
