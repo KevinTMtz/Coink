@@ -16,6 +16,7 @@ const dev = process.env.NODE_ENV !== 'production';
 const port = parseInt(process.env.PORT || '', 10) || 3000;
 
 import authRouter from './routers/auth';
+import transRouter from './routers/transactions';
 
 declare module 'express-session' {
   interface SessionData {
@@ -54,6 +55,9 @@ const handle = app.getRequestHandler();
 
   // Authentication router
   server.use('/api/auth', authRouter);
+
+  // Transactions router
+  server.use('/api/trans', transRouter);
 
   // Handle routes with next.js
   server.all('*', (req, res) => handle(req, res));
