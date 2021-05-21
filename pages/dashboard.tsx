@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { getRequest, postRequest } from '../lib/fetch';
-import { Button, Tabs, Text } from '@geist-ui/react';
+import { Button, Loading, Tabs, Text } from '@geist-ui/react';
 import Transaction from '../server/models/Transaction';
 //import { Plus } from '@geist-ui/react-icons';
 
@@ -16,7 +16,7 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     getRequest('/api/trans/', router).then((response) => {
       setData(response);
-      setLoading(false);
+      //setLoading(false);
     });
   }, []);
   return (
@@ -29,7 +29,7 @@ const DashboardPage: React.FC = () => {
         {!isLoading ? (
           data.map((element) => <div>{element.date}</div>)
         ) : (
-          <div>Cargando</div>
+          <Loading type='success' size='large' />
         )}
       </div>
     </>
