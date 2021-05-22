@@ -12,21 +12,17 @@ import {
   Textarea,
   Select,
 } from '@geist-ui/react';
-import Subtitle from './Subtitle';
+import ReactDatePicker from 'react-datepicker';
 import isLength from 'validator/lib/isLength';
 import isNumeric from 'validator/lib/isNumeric';
-import ReactDatePicker from 'react-datepicker';
 
-import { postRequest } from '../lib/fetch';
-
-type operationType = 'add' | 'edit';
+import Subtitle from './Subtitle';
 
 interface TransactionFormProps {
-  action: operationType;
+  action: 'add' | 'edit';
 }
 
-const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
-  const [operation, _] = useState<operationType>(action);
+const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
   const [type, setType] = useState<'income' | 'expense'>('income');
   const [errorMsg, setErrorMsg] = useState<string>('');
 
@@ -39,7 +35,7 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
   const router = useRouter();
   const { transactionID } = router.query;
 
-  let categoriesMap: { [key: string]: string } =
+  const categoriesMap: { [key: string]: string } =
     type === 'income'
       ? {
           bonus: 'Bono',
@@ -59,7 +55,7 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
         };
 
   useEffect(() => {
-    if (operation === 'edit' && transactionID) {
+    if (action === 'edit' && transactionID) {
       // TODO: Get transaction info
     }
   }, [transactionID]);
@@ -83,34 +79,35 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
     }
     setErrorMsg('');
 
-    const apiUrl = '/api/transaction/add';
-    const amount = Number(amountStr);
-    const id = operation === 'edit' ? transactionID : undefined;
     const body = {
-      name,
-      comments,
-      amount,
-      date,
+      id: action === 'edit' ? transactionID : undefined,
       type,
       category,
-      id,
+      name,
+      comments,
+      amount: parseFloat(amountStr),
+      date,
     };
 
-    const resBody = await postRequest(apiUrl, body, router);
-    if (resBody?.error) {
-      setErrorMsg(resBody.error);
+    const res = await fetch('/api/transaction/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (res.status === 401) {
+      router.replace('/login');
+    } else if (res.ok) {
+      router.back();
     }
   };
 
-  const cancelOperation = () => {
-    // TODO: Return to last page
-  };
+  const cancelOperation = () => router.back();
 
   return (
     <>
       <Head>
         <title>
-          {operation === 'add' ? 'Añadir' : 'Editar'}
+          {action === 'add' ? 'Añadir' : 'Editar'}
           {type === 'income' ? ' ingreso' : ' gasto'}
         </title>
       </Head>
@@ -121,11 +118,11 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
       >
         <Card hoverable width='auto'>
           <Subtitle>
-            {operation === 'add'
+            {action === 'add'
               ? 'Añadir'
               : `Editar ${type === 'income' ? 'ingreso' : 'gasto'}`}
           </Subtitle>
-          {operation === 'add' && (
+          {action === 'add' && (
             <Row justify='space-around'>
               <Text
                 h3
@@ -228,9 +225,8 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
           <Spacer y={0.5} />
           <Row justify='center'>
             <Button type='success-light' size='large' onClick={finishOperation}>
-              {`${operation === 'add' ? 'Añadir' : 'Editar'} ${
-                type === 'income' ? 'ingreso' : 'gasto'
-              }`}
+              {action === 'add' ? 'Añadir' : 'Editar'}
+              {type === 'income' ? ' ingreso' : ' gasto'}
             </Button>
           </Row>
           <Spacer y={0.5} />
@@ -246,4 +242,4 @@ const TransactionFormPage: React.FC<TransactionFormProps> = ({ action }) => {
   );
 };
 
-export default TransactionFormPage;
+export default TransactionForm;

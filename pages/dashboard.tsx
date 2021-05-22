@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-
-import { getRequest } from '../lib/fetch';
 import { Loading, Text } from '@geist-ui/react';
-import Transaction from '../server/models/Transaction';
+
+import { TransactionType } from '../server/models/Transaction';
 
 const DashboardPage: React.FC = () => {
-  const [data, setData] = useState<Transaction[]>([]);
+  const [data, setData] = useState<TransactionType[]>([]);
   const [isLoading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    getRequest('/api/transaction', router).then((response) => {
-      setData(response);
+    (async () => {
+      const res = await fetch('/api/transaction');
+      if (res.status === 401) {
+        return router.replace('/login');
+      }
+      const resBody = await res.json();
+      setData(resBody);
       setLoading(false);
-    });
+    })();
   }, []);
 
   return (
@@ -26,8 +30,10 @@ const DashboardPage: React.FC = () => {
       <div className='container'>
         <Text h1>Dashboard</Text>
         {!isLoading ? (
-          data.map((element, index) => (
-            <div key={`Data-${index}`}>{element.date}</div>
+          data.map((element) => (
+            <div key={element._id}>
+              {element._id} {element.name}
+            </div>
           ))
         ) : (
           <Loading type='success' size='large' />
