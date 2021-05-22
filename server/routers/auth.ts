@@ -26,13 +26,13 @@ router.post(
       return res.send({ error: 'Contraseña incorrecta' });
     }
     req.session.user = user.id;
-    res.redirect('/dashboard');
+    res.send({});
   },
 );
 
 router.post(
   '/signup',
-  body('email').isEmail(),
+  body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 6 }),
   async (req: Request, res: Response) => {
     if (!validationResult(req).isEmpty()) {
@@ -48,7 +48,7 @@ router.post(
       password: hashedPassword,
     });
     req.session.user = newUser.id;
-    res.redirect('/dashboard');
+    res.send({});
   },
 );
 
@@ -56,7 +56,7 @@ router.get('/logout', async (req: Request, res: Response) => {
   await new Promise<void>((resolve, reject) =>
     req.session.destroy((err) => (err ? reject(err) : resolve())),
   );
-  res.redirect('/login');
+  res.sendStatus(200);
 });
 
 export default router;
