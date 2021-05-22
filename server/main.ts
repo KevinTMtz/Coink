@@ -40,6 +40,7 @@ const handle = app.getRequestHandler();
       .then(() => console.log(`connected to database on ${mongoUrl}`)),
     app.prepare().then(() => console.log('next.js server ready')),
   ]);
+  mongoose.set('useFindAndModify', false);
 
   // TODO: Delete after tests
   // await createSampleData(userId);

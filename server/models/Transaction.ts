@@ -1,16 +1,19 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-type TransactionType = Income | Expense;
-type IncomeCategory = 'bonus' | 'salary' | 'sale' | 'other';
-type ExpenseCategory =
-  | 'bills'
-  | 'food'
-  | 'clothes'
-  | 'transport'
-  | 'entertainment'
-  | 'health'
-  | 'education'
-  | 'other';
+export const incomeCategories = ['bonus', 'salary', 'sale', 'other'] as const;
+type IncomeCategory = typeof incomeCategories[number];
+
+export const expenseCategories = [
+  'bills',
+  'food',
+  'clothes',
+  'transport',
+  'entertainment',
+  'health',
+  'education',
+  'other',
+] as const;
+type ExpenseCategory = typeof expenseCategories[number];
 
 interface Transaction extends Document {
   name: string;
@@ -29,6 +32,8 @@ interface Expense extends Transaction {
   type: 'expense';
   category: ExpenseCategory;
 }
+
+export type TransactionType = Income | Expense;
 
 const transactionSchema = new Schema<TransactionType>({
   type: { type: String, required: true },

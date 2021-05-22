@@ -1,19 +1,10 @@
-import Transaction from './models/Transaction';
+import Transaction, {
+  expenseCategories,
+  incomeCategories,
+} from './models/Transaction';
 
 const getRandomCategory = (type: string) => {
-  const categories =
-    type === 'income'
-      ? ['bonus', 'salary', 'sale', 'other']
-      : [
-          'bills',
-          'food',
-          'clothes',
-          'transport',
-          'entertainment',
-          'health',
-          'education',
-          'other',
-        ];
+  const categories = type === 'income' ? incomeCategories : expenseCategories;
   return categories[Math.floor(Math.random() * categories.length)];
 };
 
