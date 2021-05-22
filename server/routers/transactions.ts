@@ -64,7 +64,7 @@ router.post(
     if (!validationResult(req).isEmpty()) {
       return res.sendStatus(400);
     }
-    await Transaction.deleteOne({ _id: req.body.id });
+    await Transaction.deleteOne({ _id: req.body.id, userId: req.session.user });
     res.sendStatus(200);
   },
 );
