@@ -10,7 +10,7 @@
 
 A simple application to keep track of your finances
 
-Final project for Web Applications
+Final project for Web Applications Development class. [You can find our presentation here](https://docs.google.com/presentation/d/1wIswKWDAteS3dQmHPtA0IAZ-UUVzKOucArsaG7dCCR4)
 
 ## Tech stack
 
