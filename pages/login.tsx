@@ -5,8 +5,6 @@ import { Button, Card, Grid, Input, Row, Spacer, Text } from '@geist-ui/react';
 import isEmail from 'validator/lib/isEmail';
 import isLength from 'validator/lib/isLength';
 
-import { postRequest } from '../lib/fetch';
-
 const LoginPage: React.FC = () => {
   const [view, setView] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
@@ -17,7 +15,7 @@ const LoginPage: React.FC = () => {
   const login = async () => {
     if (view === 'register') {
       if (!isEmail(email)) {
-        setErrorMsg('Ingrese un correo electrónico es válido');
+        setErrorMsg('Ingrese un correo electrónico válido');
         return;
       }
       if (!isLength(password, { min: 6 })) {
@@ -25,11 +23,18 @@ const LoginPage: React.FC = () => {
         return;
       }
     }
+
     const apiUrl = view === 'login' ? '/api/auth/login' : '/api/auth/signup';
-    const body = { email, password };
-    const resBody = await postRequest(apiUrl, body, router);
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const resBody = await res.json();
     if (resBody.error) {
       setErrorMsg(resBody.error);
+    } else {
+      router.push('/dashboard');
     }
   };
 
