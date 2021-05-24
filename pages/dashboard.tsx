@@ -8,6 +8,9 @@ import { TransactionType } from '../server/models/Transaction';
 const DashboardPage: React.FC = () => {
   const [data, setData] = useState<TransactionType[]>([]);
   const [isLoading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState('');
+  const [filterBy, setFilterBy] = useState('');
+  const [filterSelection, setFilterSelection] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -22,10 +25,13 @@ const DashboardPage: React.FC = () => {
     })();
   }, []);
 
-  const sort = async (sortBy: string) => {
-    console.log('Here');
-    const body = { sort: sortBy };
-    const res = await fetch('/api/transaction/sort', {
+  const organize = async () => {
+    const body = {
+      sortBy: sortBy !== '' ? sortBy : undefined,
+      filterBy: filterBy !== '' ? filterBy : undefined,
+      filterSelection: filterSelection !== '' ? filterSelection : undefined,
+    };
+    const res = await fetch('/api/transaction/organize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -45,15 +51,32 @@ const DashboardPage: React.FC = () => {
         {!isLoading ? (
           data.map((element) => (
             <div key={element._id}>
-              {element._id} {element.name} {element.date} {element.amount}
+              {element.name} {element.date} {element.amount} {element.type}{' '}
+              {element.category}
             </div>
           ))
         ) : (
           <Loading type='success' size='large' />
         )}
         <div>Add</div>
-        <div onClick={() => sort('amount')}>Sort 2</div>
-        <div>Filter</div>
+        <div onClick={() => setSortBy('date')}>By Date</div>
+        <div onClick={() => setSortBy('amount')}>By Amount</div>
+        <div onClick={() => organize()}>Sort</div>
+        <div
+          onClick={() => {
+            setFilterBy('category'), setFilterSelection('bills');
+          }}
+        >
+          By Category
+        </div>
+        <div
+          onClick={() => {
+            setFilterBy('type'), setFilterSelection('expense');
+          }}
+        >
+          By Type
+        </div>
+        <div onClick={() => organize()}>Filter</div>
       </div>
     </>
   );
