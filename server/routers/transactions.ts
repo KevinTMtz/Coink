@@ -111,21 +111,28 @@ router.get('/:id', isAuthenticated, async (req: Request, res: Response) => {
 });
 
 router.post(
-  '/sort',
-  body('sort')
-    .isString()
-    .custom((value) => {
-      if (!['date', 'amount'].includes(value)) throw new Error();
-      return true;
-    }),
+  '/organize',
   isAuthenticated,
   async (req: Request, res: Response) => {
-    console.log(req.body.sort);
     if (!validationResult(req).isEmpty()) {
       return res.sendStatus(400);
     }
+    let sort = {};
+    let filter = {};
+    if (req.body.sortBy !== undefined) {
+      sort = req.body.sortBy === 'date' ? { date: -1 } : { amount: -1 };
+    }
+    if (
+      req.body.filterBy !== undefined &&
+      req.body.filterSelection !== undefined
+    ) {
+      filter =
+        req.body.filterBy === 'category'
+          ? { category: req.body.filterSelection }
+          : { type: req.body.filterSelection };
+    }
     const list = await Transaction.find(
-      { userId: req.session.user },
+      { userId: req.session.user, ...filter },
       {
         name: 1,
         comments: 1,
@@ -134,9 +141,7 @@ router.post(
         type: 1,
         category: 1,
       },
-      {
-        sort: req.body.sort === 'date' ? { date: -1 } : { amount: -1 },
-      },
+      { sort: sort },
     ).exec();
 
     res.send(list);
