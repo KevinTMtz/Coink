@@ -22,6 +22,19 @@ const DashboardPage: React.FC = () => {
     })();
   }, []);
 
+  const sort = async (sortBy: string) => {
+    console.log('Here');
+    const body = { sort: sortBy };
+    const res = await fetch('/api/transaction/sort', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const resBody = await res.json();
+    setData(resBody);
+    setLoading(false);
+  };
+
   return (
     <>
       <Head>
@@ -32,12 +45,15 @@ const DashboardPage: React.FC = () => {
         {!isLoading ? (
           data.map((element) => (
             <div key={element._id}>
-              {element._id} {element.name}
+              {element._id} {element.name} {element.date} {element.amount}
             </div>
           ))
         ) : (
           <Loading type='success' size='large' />
         )}
+        <div>Add</div>
+        <div onClick={() => sort('amount')}>Sort 2</div>
+        <div>Filter</div>
       </div>
     </>
   );

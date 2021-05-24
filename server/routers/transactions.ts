@@ -110,4 +110,37 @@ router.get('/:id', isAuthenticated, async (req: Request, res: Response) => {
   }
 });
 
+router.post(
+  '/sort',
+  body('sort')
+    .isString()
+    .custom((value) => {
+      if (!['date', 'amount'].includes(value)) throw new Error();
+      return true;
+    }),
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    console.log(req.body.sort);
+    if (!validationResult(req).isEmpty()) {
+      return res.sendStatus(400);
+    }
+    const list = await Transaction.find(
+      { userId: req.session.user },
+      {
+        name: 1,
+        comments: 1,
+        amount: 1,
+        date: 1,
+        type: 1,
+        category: 1,
+      },
+      {
+        sort: req.body.sort === 'date' ? { date: -1 } : { amount: -1 },
+      },
+    ).exec();
+
+    res.send(list);
+  },
+);
+
 export default router;
