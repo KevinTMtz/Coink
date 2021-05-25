@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Loading, Text } from '@geist-ui/react';
+import { Button, Grid, Loading, Text } from '@geist-ui/react';
 
 import { TransactionType } from '../server/models/Transaction';
+import Transaction from '../components/Transaction';
 
 const DashboardPage: React.FC = () => {
   const [data, setData] = useState<TransactionType[]>([]);
@@ -12,6 +13,20 @@ const DashboardPage: React.FC = () => {
   const [filterBy, setFilterBy] = useState('');
   const [filterSelection, setFilterSelection] = useState('');
   const router = useRouter();
+
+  const categories = [
+    'Bills',
+    'Food',
+    'Clothes',
+    'Transport',
+    'Entertainment',
+    'Health',
+    'Education',
+    'Bonus',
+    'Salary',
+    'Sale',
+    'Other',
+  ];
 
   useEffect(() => {
     (async () => {
@@ -46,38 +61,67 @@ const DashboardPage: React.FC = () => {
       <Head>
         <title>Dashboard</title>
       </Head>
-      <div className='container'>
-        <Text h1>Dashboard</Text>
+      <Text h1 style={{ textAlign: 'center' }}>
+        Dashboard
+      </Text>
+      <Grid.Container
+        justify='center'
+        gap={4}
+        alignItems='center'
+        style={{ maxWidth: '90vw', margin: 'auto', padding: '1em' }}
+      >
         {!isLoading ? (
           data.map((element) => (
-            <div key={element._id}>
-              {element.name} {element.date} {element.amount} {element.type}{' '}
-              {element.category}
-            </div>
+            <Transaction data={element} key={element._id} />
           ))
         ) : (
           <Loading type='success' size='large' />
         )}
-        <div>Add</div>
-        <div onClick={() => setSortBy('date')}>By Date</div>
-        <div onClick={() => setSortBy('amount')}>By Amount</div>
-        <div onClick={() => organize()}>Sort</div>
-        <div
-          onClick={() => {
-            setFilterBy('category'), setFilterSelection('bills');
-          }}
+
+        <Button>Add Transaction</Button>
+        <Grid justify='space-evenly' sm={24} alignItems='center'>
+          <Button onClick={() => setSortBy('date')} size='small'>
+            By Date
+          </Button>
+          <Button onClick={() => setSortBy('amount')} size='small'>
+            By Amount
+          </Button>
+        </Grid>
+        <Grid.Container justify='center'>
+          {categories.map((category) => (
+            <Button
+              key={category}
+              onClick={() => {
+                setFilterBy('category'),
+                  setFilterSelection(category.toLowerCase());
+              }}
+              size='small'
+            >
+              By {category}
+            </Button>
+          ))}
+        </Grid.Container>
+        <Grid justify='space-evenly' sm={24} alignItems='center'>
+          {['Expense', 'Income'].map((type) => (
+            <Button
+              key={type}
+              onClick={() => {
+                setFilterBy('type'), setFilterSelection(type.toLowerCase());
+              }}
+              size='small'
+            >
+              By {type}
+            </Button>
+          ))}
+        </Grid>
+
+        <Button
+          onClick={() => organize()}
+          disabled={sortBy !== '' || filterBy !== '' ? false : true}
         >
-          By Category
-        </div>
-        <div
-          onClick={() => {
-            setFilterBy('type'), setFilterSelection('expense');
-          }}
-        >
-          By Type
-        </div>
-        <div onClick={() => organize()}>Filter</div>
-      </div>
+          Organize
+        </Button>
+      </Grid.Container>
     </>
   );
 };
