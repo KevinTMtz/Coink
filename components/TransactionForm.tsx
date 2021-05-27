@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { NextRouter } from 'next/router';
 import Head from 'next/head';
 import {
   Button,
@@ -36,25 +36,24 @@ interface ExpenseFields extends BaseTransactionFields {
   category: ExpenseCategory | '';
 }
 
-type TransactionFields = IncomeFields | ExpenseFields;
+export type TransactionFields = IncomeFields | ExpenseFields;
 
 interface TransactionFormProps {
   action: 'add' | 'edit';
+  id?: string;
+  transaction: TransactionFields;
+  setTransaction: React.Dispatch<React.SetStateAction<TransactionFields>>;
+  router: NextRouter;
 }
 
-const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
-  const [transaction, setTransaction] = useState<TransactionFields>({
-    type: 'income',
-    category: '',
-    name: '',
-    comments: '',
-    amount: 0.0,
-    date: new Date(),
-  });
+const TransactionForm: React.FC<TransactionFormProps> = ({
+  action,
+  id,
+  transaction,
+  setTransaction,
+  router,
+}) => {
   const [errorMsg, setErrorMsg] = useState<string>('');
-
-  const router = useRouter();
-  const { transactionID } = router.query;
 
   const categoriesMap: { [key: string]: string } =
     transaction.type === 'income'
@@ -75,27 +74,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
           other: 'Otro',
         };
 
-  useEffect(() => {
-    if (action === 'edit' && transactionID) {
-      (async () => {
-        const res = await fetch(`/api/transaction/${transactionID}`);
-        if (!res.ok) {
-          return router.replace('/dashboard');
-        }
-        const { type, category, name, comments, amount, date } =
-          await res.json();
-        setTransaction({
-          type,
-          category,
-          name,
-          comments: comments || '',
-          amount,
-          date: new Date(date),
-        });
-      })();
-    }
-  }, [transactionID]);
-
   const finishOperation = async () => {
     if (!isLength(transaction.name, { min: 1 })) {
       setErrorMsg('Ingrese el nombre');
@@ -107,15 +85,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
     }
     setErrorMsg('');
 
-    const body = {
-      ...transaction,
-      id: action === 'edit' ? transactionID : undefined,
-    };
-
     const res = await fetch('/api/transaction/add', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ ...transaction, id }),
     });
     if (res.status === 401) {
       router.replace('/login');

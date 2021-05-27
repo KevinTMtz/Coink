@@ -86,8 +86,13 @@ router.get('/', isAuthenticated, async (req: Request, res: Response) => {
 });
 
 router.get('/:id', isAuthenticated, async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!isMongoId(id)) {
+    return res.sendStatus(404);
+  }
+
   const maybeTransaction = await Transaction.findOne(
-    { _id: req.params.id, userId: req.session.user },
+    { _id: id, userId: req.session.user },
     {
       name: 1,
       comments: 1,
