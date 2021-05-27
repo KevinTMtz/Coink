@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export const incomeCategories = ['bonus', 'salary', 'sale', 'other'] as const;
-type IncomeCategory = typeof incomeCategories[number];
+export type IncomeCategory = typeof incomeCategories[number];
 
 export const expenseCategories = [
   'bills',
@@ -13,7 +13,7 @@ export const expenseCategories = [
   'education',
   'other',
 ] as const;
-type ExpenseCategory = typeof expenseCategories[number];
+export type ExpenseCategory = typeof expenseCategories[number];
 
 interface Transaction extends Document {
   name: string;
