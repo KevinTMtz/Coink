@@ -85,4 +85,24 @@ router.get('/', isAuthenticated, async (req: Request, res: Response) => {
   res.send(list);
 });
 
+router.get('/:id', isAuthenticated, async (req: Request, res: Response) => {
+  const maybeTransaction = await Transaction.findOne(
+    { _id: req.params.id, userId: req.session.user },
+    {
+      name: 1,
+      comments: 1,
+      amount: 1,
+      date: 1,
+      type: 1,
+      category: 1,
+    },
+  ).exec();
+
+  if (maybeTransaction !== null) {
+    res.send(maybeTransaction);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 export default router;

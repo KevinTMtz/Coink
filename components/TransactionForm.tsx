@@ -56,7 +56,19 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
 
   useEffect(() => {
     if (action === 'edit' && transactionID) {
-      // TODO: Get transaction info
+      (async () => {
+        const res = await fetch(`/api/transaction/${transactionID}`);
+        if (!res.ok) {
+          return router.replace('/dashboard');
+        }
+        const resBody = await res.json();
+        setType(resBody.type);
+        setCategory(resBody.category);
+        setName(resBody.name);
+        setComments(resBody.comments || '');
+        setAmountStr('' + resBody.amount.toFixed(2));
+        setDate(new Date(resBody.date));
+      })();
     }
   }, [transactionID]);
 
@@ -225,7 +237,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
           <Spacer y={0.5} />
           <Row justify='center'>
             <Button type='success-light' size='large' onClick={finishOperation}>
-              {action === 'add' ? 'Añadir' : 'Editar'}
+              {action === 'add' ? 'Añadir' : 'Guardar'}
               {type === 'income' ? ' ingreso' : ' gasto'}
             </Button>
           </Row>
