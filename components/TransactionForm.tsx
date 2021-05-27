@@ -17,26 +17,47 @@ import isLength from 'validator/lib/isLength';
 import isNumeric from 'validator/lib/isNumeric';
 
 import Subtitle from './Subtitle';
+import { IncomeCategory, ExpenseCategory } from '../server/models/Transaction';
+
+interface BaseTransactionFields {
+  name: string;
+  comments: string;
+  amount: number;
+  date: Date;
+}
+
+interface IncomeFields extends BaseTransactionFields {
+  type: 'income';
+  category: IncomeCategory | '';
+}
+
+interface ExpenseFields extends BaseTransactionFields {
+  type: 'expense';
+  category: ExpenseCategory | '';
+}
+
+type TransactionFields = IncomeFields | ExpenseFields;
 
 interface TransactionFormProps {
   action: 'add' | 'edit';
 }
 
 const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
-  const [type, setType] = useState<'income' | 'expense'>('income');
+  const [transaction, setTransaction] = useState<TransactionFields>({
+    type: 'income',
+    category: '',
+    name: '',
+    comments: '',
+    amount: 0.0,
+    date: new Date(),
+  });
   const [errorMsg, setErrorMsg] = useState<string>('');
-
-  const [category, setCategory] = useState('');
-  const [name, setName] = useState('');
-  const [comments, setComments] = useState('');
-  const [amountStr, setAmountStr] = useState('');
-  const [date, setDate] = useState(new Date());
 
   const router = useRouter();
   const { transactionID } = router.query;
 
   const categoriesMap: { [key: string]: string } =
-    type === 'income'
+    transaction.type === 'income'
       ? {
           bonus: 'Bono',
           salary: 'Salario',
@@ -61,44 +82,34 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
         if (!res.ok) {
           return router.replace('/dashboard');
         }
-        const resBody = await res.json();
-        setType(resBody.type);
-        setCategory(resBody.category);
-        setName(resBody.name);
-        setComments(resBody.comments || '');
-        setAmountStr('' + resBody.amount.toFixed(2));
-        setDate(new Date(resBody.date));
+        const { type, category, name, comments, amount, date } =
+          await res.json();
+        setTransaction({
+          type,
+          category,
+          name,
+          comments: comments || '',
+          amount,
+          date: new Date(date),
+        });
       })();
     }
   }, [transactionID]);
 
-  const categoryHandler = (val: string | string[]) => {
-    if (typeof val === 'string') setCategory(val);
-  };
-
   const finishOperation = async () => {
-    if (!isLength(name, { min: 1 })) {
+    if (!isLength(transaction.name, { min: 1 })) {
       setErrorMsg('Ingrese el nombre');
       return;
     }
-    if (!isLength(category, { min: 1 })) {
+    if (!isLength(transaction.category, { min: 1 })) {
       setErrorMsg('Ingrese la categoría');
-      return;
-    }
-    if (!isLength(amountStr, { min: 1 }) || !isNumeric(amountStr)) {
-      setErrorMsg('Ingrese una cantidad válida');
       return;
     }
     setErrorMsg('');
 
     const body = {
+      ...transaction,
       id: action === 'edit' ? transactionID : undefined,
-      type,
-      category,
-      name,
-      comments,
-      amount: parseFloat(amountStr),
-      date,
     };
 
     const res = await fetch('/api/transaction/add', {
@@ -109,7 +120,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
     if (res.status === 401) {
       router.replace('/login');
     } else if (res.ok) {
-      router.back();
+      router.push('/dashboard');
     }
   };
 
@@ -120,7 +131,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
       <Head>
         <title>
           {action === 'add' ? 'Añadir' : 'Editar'}
-          {type === 'income' ? ' ingreso' : ' gasto'}
+          {transaction.type === 'income' ? ' ingreso' : ' gasto'}
         </title>
       </Head>
       <Grid.Container
@@ -132,16 +143,19 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
           <Subtitle>
             {action === 'add'
               ? 'Añadir'
-              : `Editar ${type === 'income' ? 'ingreso' : 'gasto'}`}
+              : `Editar ${transaction.type === 'income' ? 'ingreso' : 'gasto'}`}
           </Subtitle>
           {action === 'add' && (
             <Row justify='space-around'>
               <Text
                 h3
-                type={type === 'income' ? 'success' : 'secondary'}
+                type={transaction.type === 'income' ? 'success' : 'secondary'}
                 onClick={() => {
-                  setType('income');
-                  setCategory('');
+                  setTransaction({
+                    ...transaction,
+                    type: 'income',
+                    category: '',
+                  });
                   setErrorMsg('');
                 }}
                 style={{ fontWeight: 400, cursor: 'pointer' }}
@@ -150,10 +164,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
               </Text>
               <Text
                 h3
-                type={type === 'expense' ? 'success' : 'secondary'}
+                type={transaction.type === 'expense' ? 'success' : 'secondary'}
                 onClick={() => {
-                  setType('expense');
-                  setCategory('');
+                  setTransaction({
+                    ...transaction,
+                    type: 'expense',
+                    category: '',
+                  });
                   setErrorMsg('');
                 }}
                 style={{ fontWeight: 400, cursor: 'pointer' }}
@@ -166,8 +183,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
           <Text>Nombre</Text>
           <Input
             width='100%'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={transaction.name}
+            onChange={(e) =>
+              setTransaction({ ...transaction, name: e.target.value })
+            }
           />
           <Spacer y={0.5} />
 
@@ -175,8 +194,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
           <Select
             width='100%'
             placeholder='Seleccionar'
-            onChange={categoryHandler}
-            value={category}
+            onChange={(val) =>
+              setTransaction({
+                ...transaction,
+                category: val,
+              } as TransactionFields)
+            }
+            value={transaction.category}
           >
             {Object.keys(categoriesMap).map((key, index) => (
               <Select.Option value={key} key={index}>
@@ -190,15 +214,25 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
           <Input
             type='number'
             width='100%'
-            value={amountStr}
-            onChange={(e) => setAmountStr(e.target.value)}
+            value={'' + transaction.amount}
+            onChange={(e) => {
+              const amountStr = e.target.value;
+              if (isNumeric(amountStr)) {
+                setTransaction({
+                  ...transaction,
+                  amount: parseFloat(amountStr),
+                });
+              }
+            }}
           />
           <Spacer y={0.5} />
 
           <Text>Fecha</Text>
           <ReactDatePicker
-            selected={date}
-            onChange={(newDate) => newDate instanceof Date && setDate(newDate)}
+            selected={transaction.date}
+            onChange={(date) =>
+              date instanceof Date && setTransaction({ ...transaction, date })
+            }
             customInput={
               <input
                 style={{
@@ -217,8 +251,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
           <Text>Comentarios</Text>
           <Textarea
             width='100%'
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
+            value={transaction.comments}
+            onChange={(e) =>
+              setTransaction({ ...transaction, comments: e.target.value })
+            }
           />
           <Spacer y={0.5} />
 
@@ -238,7 +274,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ action }) => {
           <Row justify='center'>
             <Button type='success-light' size='large' onClick={finishOperation}>
               {action === 'add' ? 'Añadir' : 'Guardar'}
-              {type === 'income' ? ' ingreso' : ' gasto'}
+              {transaction.type === 'income' ? ' ingreso' : ' gasto'}
             </Button>
           </Row>
           <Spacer y={0.5} />
