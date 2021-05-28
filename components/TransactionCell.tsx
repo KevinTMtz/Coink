@@ -3,7 +3,6 @@ import { Card, Grid } from '@geist-ui/react';
 import { TransactionType } from '../server/models/Transaction';
 /** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
-import { Book } from '@geist-ui/react-icons';
 import TransactionIcon from './TransactionIcon';
 
 const CardStyle = css({

@@ -90,22 +90,6 @@ router.post(
   },
 );
 
-router.get('/', isAuthenticated, async (req: Request, res: Response) => {
-  const list = await Transaction.find(
-    { userId: req.session.user },
-    {
-      name: 1,
-      comments: 1,
-      amount: 1,
-      date: 1,
-      type: 1,
-      category: 1,
-    },
-  ).exec();
-
-  res.send(list);
-});
-
 router.get('/:id', isAuthenticated, async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!isMongoId(id)) {
@@ -131,42 +115,38 @@ router.get('/:id', isAuthenticated, async (req: Request, res: Response) => {
   }
 });
 
-router.post(
-  '/organize',
-  isAuthenticated,
-  async (req: Request, res: Response) => {
-    if (!validationResult(req).isEmpty()) {
-      return res.sendStatus(400);
-    }
-    let sort = {};
-    let filter = {};
-    if (req.body.sortBy !== undefined) {
-      sort = req.body.sortBy === 'date' ? { date: -1 } : { amount: -1 };
-    }
-    if (
-      req.body.filterBy !== undefined &&
-      req.body.filterSelection !== undefined
-    ) {
-      filter =
-        req.body.filterBy === 'category'
-          ? { category: req.body.filterSelection }
-          : { type: req.body.filterSelection };
-    }
-    const list = await Transaction.find(
-      { userId: req.session.user, ...filter },
-      {
-        name: 1,
-        comments: 1,
-        amount: 1,
-        date: 1,
-        type: 1,
-        category: 1,
-      },
-      { sort: sort },
-    ).exec();
+router.post('/', isAuthenticated, async (req: Request, res: Response) => {
+  if (!validationResult(req).isEmpty()) {
+    return res.sendStatus(400);
+  }
+  let sort = {};
+  let filter = {};
+  if (req.body.sortBy !== undefined) {
+    sort = req.body.sortBy === 'date' ? { date: -1 } : { amount: -1 };
+  }
+  if (
+    req.body.filterBy !== undefined &&
+    req.body.filterSelection !== undefined
+  ) {
+    filter =
+      req.body.filterBy === 'category'
+        ? { category: req.body.filterSelection }
+        : { type: req.body.filterSelection };
+  }
+  const list = await Transaction.find(
+    { userId: req.session.user, ...filter },
+    {
+      name: 1,
+      comments: 1,
+      amount: 1,
+      date: 1,
+      type: 1,
+      category: 1,
+    },
+    { sort: sort },
+  ).exec();
 
-    res.send(list);
-  },
-);
+  res.send(list);
+});
 
 export default router;

@@ -16,38 +16,30 @@ const DashboardPage: React.FC = () => {
   const router = useRouter();
 
   const categories = [
-    'Bills',
-    'Food',
-    'Clothes',
-    'Transport',
-    'Entertainment',
-    'Health',
-    'Education',
-    'Bonus',
-    'Salary',
-    'Sale',
-    'Other',
+    'Bono',
+    'Salario',
+    'Venta',
+    'Alimento',
+    'Educación',
+    'Entretenimiento',
+    'Recibo',
+    'Salud',
+    'Transporte',
+    'Vestimenta',
+    'Otro',
   ];
 
   useEffect(() => {
-    (async () => {
-      const res = await fetch('/api/transaction');
-      if (res.status === 401) {
-        return router.replace('/login');
-      }
-      const resBody = await res.json();
-      setData(resBody);
-      setLoading(false);
-    })();
+    organize();
   }, []);
 
   const organize = async () => {
     const body = {
-      sortBy: sortBy !== '' ? sortBy : undefined,
+      sortBy: sortBy !== '' ? sortBy : 'date',
       filterBy: filterBy !== '' ? filterBy : undefined,
       filterSelection: filterSelection !== '' ? filterSelection : undefined,
     };
-    const res = await fetch('/api/transaction/organize', {
+    const res = await fetch('/api/transaction/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -80,10 +72,10 @@ const DashboardPage: React.FC = () => {
         <Button onClick={() => router.push('/add-transaction')}>Añadir</Button>
         <Grid justify='space-evenly' sm={24} alignItems='center'>
           <Button onClick={() => setSortBy('date')} size='small'>
-            By Date
+            Por Fecha
           </Button>
           <Button onClick={() => setSortBy('amount')} size='small'>
-            By Amount
+            Por Monto
           </Button>
         </Grid>
         <Grid.Container justify='center'>
@@ -96,7 +88,7 @@ const DashboardPage: React.FC = () => {
               }}
               size='small'
             >
-              By {category}
+              Por {category}
             </Button>
           ))}
         </Grid.Container>
