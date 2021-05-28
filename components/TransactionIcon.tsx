@@ -36,9 +36,8 @@ const TransactionIcon: React.FC<IconProps> = ({ category }) => {
   return (
     <FontAwesomeIcon
       icon={icons[category]}
-      size='3x'
       color='white'
-      style={{ backgroundColor: 'black' }}
+      style={{ marginRight: '5em', width: '48px', height: '48px' }}
     />
   );
 };

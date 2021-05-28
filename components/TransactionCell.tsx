@@ -4,6 +4,7 @@ import { TransactionType } from '../server/models/Transaction';
 /** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import TransactionIcon from './TransactionIcon';
+import { ChevronRight } from '@geist-ui/react-icons';
 
 const CardStyle = css({
   display: 'flex',
@@ -13,15 +14,15 @@ const CardStyle = css({
   h2: { fontSize: '1.25rem' },
   h3: { fontSize: '1rem', color: 'white', fontWeight: 300 },
   maxHeight: '50px',
+  width: '95%',
+  margin: 'auto',
+  cursor: 'pointer',
 });
 
-const InfoStyle = css({
+const RightStyle = css({
   display: 'flex',
   alignItems: 'center',
-  textAlign: 'right',
-  justifyContent: 'space-around',
-  width: '25%',
-  backgroundColor: 'red',
+  textAlign: 'left',
 });
 
 interface TransactionProps {
@@ -40,19 +41,27 @@ const Transaction: React.FC<TransactionProps> = ({ data }) => {
         }}
       >
         <div css={CardStyle}>
-          <div css={InfoStyle}>
+          <div css={RightStyle}>
             <TransactionIcon category={data.category} />
             <div>
               <h2>{data.name}</h2>
               <h3>{new Date(data.date).toISOString().split('T')[0]}</h3>
             </div>
           </div>
-          <div>
-            <h1 style={{ color: data.type === 'income' ? 'black' : 'red' }}>
-              {data.type === 'expense' && '-'} $ {data.amount.toFixed(2)}
+          <div css={RightStyle}>
+            <h1
+              style={{
+                color: data.type === 'income' ? 'black' : 'red',
+                marginRight: '2em',
+              }}
+            >
+              {data.type === 'expense' && '-'} ${' '}
+              {data.amount
+                .toFixed(2)
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             </h1>
-            {/*Detail Button*/}
-            <h1>{'>'}</h1>
+            <ChevronRight color='white' size={42} />
           </div>
         </div>
       </Card>
