@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import { Button, Grid, Loading, Text } from '@geist-ui/react';
 
 import { TransactionType } from '../server/models/Transaction';
-import Transaction from '../components/Transaction';
+import Transaction from '../components/TransactionCell';
+import Title from '../components/Title';
 
 const DashboardPage: React.FC = () => {
   const [data, setData] = useState<TransactionType[]>([]);
@@ -61,9 +62,7 @@ const DashboardPage: React.FC = () => {
       <Head>
         <title>Dashboard</title>
       </Head>
-      <Text h1 style={{ textAlign: 'center' }}>
-        Dashboard
-      </Text>
+      <Title>Dashboard</Title>
       <Grid.Container
         justify='center'
         gap={4}
@@ -78,7 +77,7 @@ const DashboardPage: React.FC = () => {
           <Loading type='success' size='large' />
         )}
 
-        <Button>Add Transaction</Button>
+        <Button onClick={() => router.push('/add-transaction')}>Añadir</Button>
         <Grid justify='space-evenly' sm={24} alignItems='center'>
           <Button onClick={() => setSortBy('date')} size='small'>
             By Date
