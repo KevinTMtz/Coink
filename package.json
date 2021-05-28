@@ -18,6 +18,9 @@
   "dependencies": {
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "@geist-ui/react": "^2.1.5",
     "@geist-ui/react-icons": "^1.0.1",
     "bcrypt": "^5.0.1",
