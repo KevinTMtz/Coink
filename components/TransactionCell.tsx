@@ -11,16 +11,15 @@ const CardStyle = css({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  h1: { fontSize: '1.5rem', fontWeight: 500 },
-  h2: { fontSize: '1.25rem' },
-  h3: { fontSize: '1rem', color: 'white', fontWeight: 300 },
+  h1: { fontSize: '1.5rem' },
+  h2: { fontSize: '1.25rem', fontWeight: 500 },
+  h3: { fontSize: '1rem', fontWeight: 300 },
   maxHeight: '50px',
   width: '95%',
-  margin: 'auto',
   cursor: 'pointer',
 });
 
-const RightStyle = css({
+const InfoStyle = css({
   display: 'flex',
   alignItems: 'center',
   textAlign: 'left',
@@ -32,38 +31,37 @@ interface TransactionProps {
 }
 
 const TransactionCell: React.FC<TransactionProps> = ({ data, router }) => (
-  <Grid sm={24} style={{ width: '90%', margin: 'auto' }}>
-    <Card
-      hoverable
-      type='cyan'
-      onClick={() => router.push(`/edit-transaction/${data._id}`)}
-    >
-      <div css={CardStyle}>
-        <div css={RightStyle}>
-          <TransactionIcon category={data.category} />
-          <div>
-            <h2>{data.name}</h2>
-            <h3>{new Date(data.date).toISOString().split('T')[0]}</h3>
-          </div>
-        </div>
-        <div css={RightStyle}>
-          <h1
-            style={{
-              color: data.type === 'income' ? 'black' : 'red',
-              marginRight: '2em',
-            }}
-          >
-            {data.type === 'expense' && '-'} ${' '}
-            {data.amount
-              .toFixed(2)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          </h1>
-          <ChevronRight color='white' size={42} />
+  <Card
+    hoverable
+    type='lite'
+    onClick={() => router.push(`/edit-transaction/${data._id}`)}
+    style={{ width: '90%', margin: '1em auto' }}
+  >
+    <div css={CardStyle}>
+      <div css={InfoStyle}>
+        <TransactionIcon category={data.category} />
+        <div>
+          <h2>{data.name}</h2>
+          <h3>{new Date(data.date).toISOString().split('T')[0]}</h3>
         </div>
       </div>
-    </Card>
-  </Grid>
+      <div css={InfoStyle}>
+        <h1
+          style={{
+            color: data.type === 'income' ? 'black' : 'red',
+            marginRight: '2em',
+          }}
+        >
+          {data.type === 'expense' && '-'} ${' '}
+          {data.amount
+            .toFixed(2)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+        </h1>
+        <ChevronRight color='black' size={42} />
+      </div>
+    </div>
+  </Card>
 );
 
 export default TransactionCell;
