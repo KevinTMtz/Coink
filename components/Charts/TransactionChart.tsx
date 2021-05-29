@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
 
-const ExpensesChart: React.FC = () => {
+import {
+  expenseCategoriesTranslations,
+  incomeCategoriesTranslations,
+} from '../../lib/translations';
+import {
+  ExpenseCategory,
+  IncomeCategory,
+} from '../../server/models/Transaction';
+
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
+  ssr: false,
+});
+
+interface ChartProps {
+  type: 'incomes' | 'expenses';
+}
+
+const TransactionChart: React.FC<ChartProps> = ({ type }) => {
   const [series, setSeries] = useState<number[]>();
 
   const [options, setOptions] = useState<ApexOptions>();
 
   useEffect(() => {
     (async () => {
-      const resExpenses = await fetch('/api/stats/expenses');
+      const resExpenses = await fetch(`/api/stats/${type}`);
       let resBody = await resExpenses.json();
 
       setSeries(
@@ -21,7 +38,7 @@ const ExpensesChart: React.FC = () => {
 
       setOptions({
         title: {
-          text: 'Gastos',
+          text: type === 'incomes' ? 'Ingresos' : 'Gastos',
         },
         chart: {
           type: 'donut',
@@ -41,16 +58,9 @@ const ExpensesChart: React.FC = () => {
         ],
         labels: resBody.map(
           (expense: { _id: string; count: number; amount: number }) =>
-            ({
-              food: 'Alimento',
-              education: 'Educación',
-              entertainment: 'Entretenimiento',
-              bills: 'Recibo',
-              health: 'Salud',
-              transport: 'Transporte',
-              clothes: 'Vestimenta',
-              other: 'Otro',
-            }[expense._id]),
+            type === 'incomes'
+              ? incomeCategoriesTranslations[expense._id as IncomeCategory]
+              : expenseCategoriesTranslations[expense._id as ExpenseCategory],
         ),
         plotOptions: {
           pie: {
@@ -60,6 +70,18 @@ const ExpensesChart: React.FC = () => {
                 total: {
                   showAlways: true,
                   show: true,
+                  formatter: (val: { globals: { seriesTotals: number[] } }) => {
+                    return `$ ${val.globals.seriesTotals
+                      .reduce(
+                        (sum: number, current: number) => sum + current,
+                        0,
+                      )
+                      .toFixed(2)}`;
+                  },
+                },
+                value: {
+                  color: type === 'incomes' ? '#0070F3' : '#FF4560',
+                  fontWeight: 'bold',
                 },
               },
             },
@@ -84,4 +106,4 @@ const ExpensesChart: React.FC = () => {
   );
 };
 
-export default ExpensesChart;
+export default TransactionChart;
