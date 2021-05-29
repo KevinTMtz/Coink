@@ -36,7 +36,7 @@ const icons: { [key: string]: IconDefinition } = {
 const TransactionIcon: React.FC<IconProps> = ({ category }) => (
   <FontAwesomeIcon
     icon={icons[category]}
-    color='white'
+    color='#AAA'
     style={{ marginRight: '5em', width: '48px', height: '48px' }}
   />
 );

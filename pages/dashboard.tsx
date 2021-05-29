@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Button, Grid, Loading } from '@geist-ui/react';
+import { Button, ButtonDropdown, Grid, Loading } from '@geist-ui/react';
 
 import Title from '../components/Title';
 import TransactionCell from '../components/TransactionCell';
@@ -11,6 +11,34 @@ import {
   typeTranslations,
 } from '../lib/translations';
 import { TransactionType } from '../server/models/Transaction';
+import { Plus } from '@geist-ui/react-icons';
+/** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
+
+const ControlsStyle = css({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
+
+const BttnsStyle = css({
+  display: 'flex',
+  width: '90%',
+  justifyContent: 'space-evenly',
+  '.Bttn': {
+    display: 'flex',
+    margin: '1em',
+    alignItems: 'center',
+    h3: {
+      marginRight: '2em',
+    },
+  },
+});
+
+const ListStyle = css({
+  display: 'flex',
+  flexDirection: 'column',
+});
 
 const DashboardPage: React.FC = () => {
   const [data, setData] = useState<TransactionType[]>([]);
@@ -46,72 +74,94 @@ const DashboardPage: React.FC = () => {
     setData(resBody);
     setLoading(false);
   };
-
+  useEffect(() => {
+    organize();
+  }, [sortBy, filterBy, filterSelection]);
   return (
     <>
       <Head>
         <title>Dashboard</title>
       </Head>
       <Title>Dashboard</Title>
-      <Grid.Container
-        justify='center'
-        gap={4}
-        alignItems='center'
-        style={{ maxWidth: '90vw', margin: 'auto', padding: '1em' }}
-      >
-        <Button onClick={() => router.push('/add-transaction')}>Añadir</Button>
-        <Grid justify='space-evenly' sm={24} alignItems='center'>
-          <Button onClick={() => setSortBy('date')} size='small'>
-            Por Fecha
+      <div>
+        <div css={ControlsStyle}>
+          <Button
+            onClick={() => router.push('/add-transaction')}
+            icon={<Plus />}
+            type='success'
+            ghost
+            size='large'
+          >
+            Añadir
           </Button>
-          <Button onClick={() => setSortBy('amount')} size='small'>
-            Por Monto
-          </Button>
-        </Grid>
-        <Grid.Container justify='center'>
-          {categories.map(([category, translation]) => (
-            <Button
-              key={category}
-              onClick={() => {
-                setFilterBy('category');
-                setFilterSelection(category);
-              }}
-              size='small'
-            >
-              Por {translation}
-            </Button>
-          ))}
-        </Grid.Container>
-        <Grid justify='space-evenly' sm={24} alignItems='center'>
-          {types.map(([type, translation]) => (
-            <Button
-              key={type}
-              onClick={() => {
-                setFilterBy('type');
-                setFilterSelection(type.toLowerCase());
-              }}
-              size='small'
-            >
-              Por {translation}
-            </Button>
-          ))}
-        </Grid>
-
-        <Button
-          onClick={() => organize()}
-          disabled={sortBy !== '' || filterBy !== '' ? false : true}
-        >
-          Organizar
-        </Button>
-
-        {isLoading ? (
-          <Loading type='success' size='large' />
-        ) : (
-          data.map((element) => (
-            <TransactionCell data={element} key={element._id} router={router} />
-          ))
-        )}
-      </Grid.Container>
+          <div css={BttnsStyle}>
+            <div className='Bttn'>
+              <h3>Filtrar por:</h3>
+              <ButtonDropdown>
+                {categories.map(([category, translation]) => (
+                  <ButtonDropdown.Item
+                    key={category}
+                    onClick={() => {
+                      setFilterBy('category');
+                      setFilterSelection(category);
+                    }}
+                  >
+                    Por {translation}
+                  </ButtonDropdown.Item>
+                ))}
+              </ButtonDropdown>
+            </div>
+            <div className='Bttn'>
+              <h3>Ordenar por:</h3>
+              <ButtonDropdown>
+                <ButtonDropdown.Item onClick={() => setSortBy('date')}>
+                  Por Fecha
+                </ButtonDropdown.Item>
+                <ButtonDropdown.Item onClick={() => setSortBy('amount')}>
+                  Por Monto
+                </ButtonDropdown.Item>
+              </ButtonDropdown>
+            </div>
+            <div className='Bttn'>
+              <h3>Mostrar:</h3>
+              <ButtonDropdown>
+                {types.map(([type, translation]) => (
+                  <ButtonDropdown.Item
+                    key={type}
+                    onClick={() => {
+                      setFilterBy('type');
+                      setFilterSelection(type.toLowerCase());
+                    }}
+                  >
+                    Solo {translation}s
+                  </ButtonDropdown.Item>
+                ))}
+                <ButtonDropdown.Item
+                  onClick={() => {
+                    setFilterBy('type');
+                    setFilterSelection('');
+                  }}
+                >
+                  Ambos
+                </ButtonDropdown.Item>
+              </ButtonDropdown>
+            </div>
+          </div>
+        </div>
+        <div css={ListStyle}>
+          {isLoading ? (
+            <Loading type='success' size='large' />
+          ) : (
+            data.map((element) => (
+              <TransactionCell
+                data={element}
+                key={element._id}
+                router={router}
+              />
+            ))
+          )}
+        </div>
+      </div>
     </>
   );
 };
