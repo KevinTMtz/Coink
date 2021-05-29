@@ -17,6 +17,10 @@ import isLength from 'validator/lib/isLength';
 import isNumeric from 'validator/lib/isNumeric';
 
 import Subtitle from './Subtitle';
+import {
+  expenseCategoriesTranslations,
+  incomeCategoriesTranslations,
+} from '../lib/translations';
 import { IncomeCategory, ExpenseCategory } from '../server/models/Transaction';
 
 interface BaseTransactionFields {
@@ -57,22 +61,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   const categoriesMap: { [key: string]: string } =
     transaction.type === 'income'
-      ? {
-          bonus: 'Bono',
-          salary: 'Salario',
-          sale: 'Venta',
-          other: 'Otro',
-        }
-      : {
-          food: 'Alimento',
-          education: 'Educación',
-          entertainment: 'Entretenimiento',
-          bills: 'Recibo',
-          health: 'Salud',
-          transport: 'Transporte',
-          clothes: 'Vestimenta',
-          other: 'Otro',
-        };
+      ? incomeCategoriesTranslations
+      : expenseCategoriesTranslations;
 
   const finishOperation = async () => {
     if (!isLength(transaction.name, { min: 1 })) {

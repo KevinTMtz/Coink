@@ -56,27 +56,6 @@ router.post(
   },
 );
 
-router.get('/:id', isAuthenticated, async (req: Request, res: Response) => {
-  if (!validationResult(req).isEmpty()) {
-    return res.sendStatus(400);
-  }
-  const data = await Transaction.findOne(
-    {
-      _id: req.params.id,
-      userId: req.session.user,
-    },
-    {
-      name: 1,
-      comments: 1,
-      amount: 1,
-      date: 1,
-      type: 1,
-      category: 1,
-    },
-  ).exec();
-  res.send(data);
-});
-
 router.post(
   '/delete',
   body('id').isMongoId(),
@@ -116,9 +95,6 @@ router.get('/:id', isAuthenticated, async (req: Request, res: Response) => {
 });
 
 router.post('/', isAuthenticated, async (req: Request, res: Response) => {
-  if (!validationResult(req).isEmpty()) {
-    return res.sendStatus(400);
-  }
   let sort = {};
   let filter = {};
   if (req.body.sortBy !== undefined) {
