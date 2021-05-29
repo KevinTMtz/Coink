@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
 
-const TimelineChart: React.FC = () => {
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
+  ssr: false,
+});
+
+interface ChartProps {
+  type: 'amount' | 'count';
+}
+
+const TimelineChart: React.FC<ChartProps> = ({ type }) => {
   const [series, setSeries] = useState<{ name: string; data: number[] }[]>();
 
   const [options, setOptions] = useState<ApexOptions>();
@@ -15,18 +23,22 @@ const TimelineChart: React.FC = () => {
       setSeries([
         {
           name: 'Gasto',
-          data: resBody.expenseAmounts.map((expense: number) => expense * -1),
+          data: (type === 'amount'
+            ? resBody.expenseAmounts
+            : resBody.expenseCounts
+          ).map((expense: number) => expense * -1),
         },
         {
           name: 'Ingreso',
-          data: resBody.incomeAmounts,
+          data:
+            type === 'amount' ? resBody.incomeAmounts : resBody.incomeCounts,
         },
       ]);
 
-      const maxTransaction = Math.max(
-        ...resBody.expenseAmounts,
-        ...resBody.incomeAmounts,
-      );
+      const maxTransaction =
+        type === 'amount'
+          ? Math.max(...resBody.expenseAmounts, ...resBody.incomeAmounts)
+          : Math.max(...resBody.expenseCounts, ...resBody.incomeCounts);
       setOptions({
         chart: {
           type: 'bar',
@@ -51,16 +63,25 @@ const TimelineChart: React.FC = () => {
           },
         },
         title: {
-          text: 'Ingreso y gasto mensual',
+          text:
+            type === 'amount'
+              ? 'Ingreso y gasto mensual'
+              : 'Conteo de gastos e ingresos',
         },
         yaxis: {
-          min: -1 * (maxTransaction + maxTransaction * 0.05),
-          max: maxTransaction + maxTransaction * 0.05,
+          min: -1 * maxTransaction,
+          max: maxTransaction,
+          labels: {
+            formatter:
+              type === 'amount'
+                ? (val: number) => `$ ${val.toFixed(2)}`
+                : undefined,
+          },
         },
         xaxis: {
           categories: resBody.dates.map((dateStr: string) => {
             const date = new Date(dateStr);
-            return `${date.getMonth()}-${date.getFullYear()}`;
+            return `${date.getMonth() + 1}-${date.getFullYear()}`;
           }),
         },
       } as ApexOptions);
