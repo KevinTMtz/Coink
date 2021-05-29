@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCar,
@@ -19,6 +18,7 @@ import {
 interface IconProps {
   category: string;
 }
+
 const icons: { [key: string]: IconDefinition } = {
   bills: faReceipt,
   food: faUtensils,
@@ -32,14 +32,13 @@ const icons: { [key: string]: IconDefinition } = {
   sale: faSign,
   other: faPiggyBank,
 };
-const TransactionIcon: React.FC<IconProps> = ({ category }) => {
-  return (
-    <FontAwesomeIcon
-      icon={icons[category]}
-      color='white'
-      style={{ marginRight: '5em', width: '48px', height: '48px' }}
-    />
-  );
-};
+
+const TransactionIcon: React.FC<IconProps> = ({ category }) => (
+  <FontAwesomeIcon
+    icon={icons[category]}
+    color='white'
+    style={{ marginRight: '5em', width: '48px', height: '48px' }}
+  />
+);
 
 export default TransactionIcon;

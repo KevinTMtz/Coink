@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Button, Grid, Loading, Text } from '@geist-ui/react';
+import { Button, Grid, Loading } from '@geist-ui/react';
 
-import { TransactionType } from '../server/models/Transaction';
-import Transaction from '../components/TransactionCell';
 import Title from '../components/Title';
+import TransactionCell from '../components/TransactionCell';
+import {
+  expenseCategoriesTranslations,
+  incomeCategoriesTranslations,
+  typeTranslations,
+} from '../lib/translations';
+import { TransactionType } from '../server/models/Transaction';
 
 const DashboardPage: React.FC = () => {
   const [data, setData] = useState<TransactionType[]>([]);
@@ -15,19 +20,12 @@ const DashboardPage: React.FC = () => {
   const [filterSelection, setFilterSelection] = useState('');
   const router = useRouter();
 
-  const categories = [
-    'Bono',
-    'Salario',
-    'Venta',
-    'Alimento',
-    'Educación',
-    'Entretenimiento',
-    'Recibo',
-    'Salud',
-    'Transporte',
-    'Vestimenta',
-    'Otro',
-  ];
+  const categoryTranslations = {
+    ...incomeCategoriesTranslations,
+    ...expenseCategoriesTranslations,
+  };
+  const categories = Object.entries(categoryTranslations);
+  const types = Object.entries(typeTranslations);
 
   useEffect(() => {
     organize();
@@ -61,14 +59,6 @@ const DashboardPage: React.FC = () => {
         alignItems='center'
         style={{ maxWidth: '90vw', margin: 'auto', padding: '1em' }}
       >
-        {!isLoading ? (
-          data.map((element) => (
-            <Transaction data={element} key={element._id} />
-          ))
-        ) : (
-          <Loading type='success' size='large' />
-        )}
-
         <Button onClick={() => router.push('/add-transaction')}>Añadir</Button>
         <Grid justify='space-evenly' sm={24} alignItems='center'>
           <Button onClick={() => setSortBy('date')} size='small'>
@@ -79,29 +69,30 @@ const DashboardPage: React.FC = () => {
           </Button>
         </Grid>
         <Grid.Container justify='center'>
-          {categories.map((category) => (
+          {categories.map(([category, translation]) => (
             <Button
               key={category}
               onClick={() => {
-                setFilterBy('category'),
-                  setFilterSelection(category.toLowerCase());
+                setFilterBy('category');
+                setFilterSelection(category);
               }}
               size='small'
             >
-              Por {category}
+              Por {translation}
             </Button>
           ))}
         </Grid.Container>
         <Grid justify='space-evenly' sm={24} alignItems='center'>
-          {['Expense', 'Income'].map((type) => (
+          {types.map(([type, translation]) => (
             <Button
               key={type}
               onClick={() => {
-                setFilterBy('type'), setFilterSelection(type.toLowerCase());
+                setFilterBy('type');
+                setFilterSelection(type.toLowerCase());
               }}
               size='small'
             >
-              By {type}
+              Por {translation}
             </Button>
           ))}
         </Grid>
@@ -110,8 +101,16 @@ const DashboardPage: React.FC = () => {
           onClick={() => organize()}
           disabled={sortBy !== '' || filterBy !== '' ? false : true}
         >
-          Organize
+          Organizar
         </Button>
+
+        {isLoading ? (
+          <Loading type='success' size='large' />
+        ) : (
+          data.map((element) => (
+            <TransactionCell data={element} key={element._id} router={router} />
+          ))
+        )}
       </Grid.Container>
     </>
   );
