@@ -39,6 +39,10 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
       setOptions({
         title: {
           text: type === 'incomes' ? 'Ingresos' : 'Gastos',
+          style: {
+            fontSize: '16',
+            fontWeight: 'bold',
+          },
         },
         chart: {
           type: 'donut',
@@ -76,7 +80,8 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
                         (sum: number, current: number) => sum + current,
                         0,
                       )
-                      .toFixed(2)}`;
+                      .toFixed(2)
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
                   },
                 },
                 value: {
@@ -98,8 +103,8 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
           options={options}
           series={series}
           type='donut'
-          width={500}
-          height={320}
+          width='100%'
+          height={300}
         />
       )}
     </>

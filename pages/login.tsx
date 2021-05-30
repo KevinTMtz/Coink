@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
+/** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Button, Card, Grid, Input, Row, Spacer, Text } from '@geist-ui/react';
+import { Button, Card, Input, Row, Spacer, Text } from '@geist-ui/react';
 import isEmail from 'validator/lib/isEmail';
 import isLength from 'validator/lib/isLength';
+
+const ContainerStyle = css({
+  margin: 'auto',
+  display: 'flex',
+  alignItems: 'center',
+  alignContent: 'center',
+  width: '40%',
+  height: '100vh',
+  '@media (max-width: 600px)': {
+    width: '95%',
+  },
+});
 
 const LoginPage: React.FC = () => {
   const [view, setView] = useState<'login' | 'register'>('login');
@@ -43,12 +56,8 @@ const LoginPage: React.FC = () => {
       <Head>
         <title>{view === 'login' ? 'Inicia sesión' : 'Regístrate'}</title>
       </Head>
-      <Grid.Container
-        justify='center'
-        alignItems='center'
-        style={{ minHeight: '100vh', padding: '0 0.5rem' }}
-      >
-        <Card shadow width='auto'>
+      <div css={ContainerStyle}>
+        <Card shadow width='100%'>
           <Row justify='space-around'>
             <Text
               h3
@@ -78,6 +87,7 @@ const LoginPage: React.FC = () => {
             size='large'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            width='100%'
           >
             Correo electrónico
           </Input>
@@ -87,6 +97,7 @@ const LoginPage: React.FC = () => {
             type='password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            width='100%'
           >
             Contraseña
           </Input>
@@ -104,12 +115,17 @@ const LoginPage: React.FC = () => {
             </Text>
           )}
           <Spacer y={0.5} />
-          <Button type='success-light' size='large' onClick={login}>
+          <Button
+            type='success-light'
+            size='large'
+            style={{ width: '100%' }}
+            onClick={login}
+          >
             {view === 'login' ? 'Iniciar sesión' : 'Regístrate'}
           </Button>
           <Spacer y={0.5} />
         </Card>
-      </Grid.Container>
+      </div>
     </>
   );
 };

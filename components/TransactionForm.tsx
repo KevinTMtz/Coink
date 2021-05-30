@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+/** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
 import { NextRouter } from 'next/router';
 import Head from 'next/head';
 import {
   Button,
   Card,
-  Grid,
   Input,
   Row,
   Spacer,
@@ -22,6 +22,18 @@ import {
   incomeCategoriesTranslations,
 } from '../lib/translations';
 import { IncomeCategory, ExpenseCategory } from '../server/models/Transaction';
+
+const ContainerStyle = css({
+  margin: 'auto',
+  display: 'flex',
+  alignItems: 'center',
+  alignContent: 'center',
+  width: '40%',
+  minHeight: '100vh',
+  '@media (max-width: 600px)': {
+    width: '95%',
+  },
+});
 
 interface BaseTransactionFields {
   name: string;
@@ -97,12 +109,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           {transaction.type === 'income' ? ' ingreso' : ' gasto'}
         </title>
       </Head>
-      <Grid.Container
-        justify='center'
-        alignItems='center'
-        style={{ minHeight: '100vh', padding: '0 0.5rem' }}
-      >
-        <Card hoverable width='auto'>
+      <div css={ContainerStyle}>
+        <Card hoverable width='100%'>
           <Subtitle>
             {action === 'add'
               ? 'Añadir'
@@ -235,20 +243,30 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           )}
           <Spacer y={0.5} />
           <Row justify='center'>
-            <Button type='success-light' size='large' onClick={finishOperation}>
+            <Button
+              type='success-light'
+              size='large'
+              style={{ width: '100%' }}
+              onClick={finishOperation}
+            >
               {action === 'add' ? 'Añadir' : 'Guardar'}
               {transaction.type === 'income' ? ' ingreso' : ' gasto'}
             </Button>
           </Row>
           <Spacer y={0.5} />
           <Row justify='center'>
-            <Button type='abort' size='large' onClick={cancelOperation}>
+            <Button
+              type='abort'
+              size='large'
+              style={{ width: '100%' }}
+              onClick={cancelOperation}
+            >
               Cancelar
             </Button>
           </Row>
           <Spacer y={0.5} />
         </Card>
-      </Grid.Container>
+      </div>
     </>
   );
 };
