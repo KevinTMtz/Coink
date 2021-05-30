@@ -207,7 +207,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             customInput={
               <input
                 style={{
-                  padding: '12px 102px 12px 12px',
+                  padding: '12px',
                   margin: '0px auto',
                   borderRadius: '5px',
                   border: '1px solid #eaeaea',

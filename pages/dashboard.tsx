@@ -50,16 +50,15 @@ const DashboardPage: React.FC = () => {
         <Spacer />
 
         <Tabs initialValue='1' css={TabsStyle}>
-          <Tabs.Item label='Gráficas' value='1'>
+          <Tabs.Item label='Tablero' value='1'>
             <Spacer />
             <TimelineChart type='amount' />
-            <TimelineChart type='count' />
             <TransactionChart type='incomes' />
             <TransactionChart type='expenses' />
             <Spacer y={3} />
           </Tabs.Item>
 
-          <Tabs.Item label='Tus transacciones' value='2'>
+          <Tabs.Item label='Transacciones' value='2'>
             <TransactionList router={router} />
           </Tabs.Item>
         </Tabs>

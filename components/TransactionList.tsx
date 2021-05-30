@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 /** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
-import { ButtonDropdown, Loading, Spacer } from '@geist-ui/react';
+import { Select, Loading, Spacer } from '@geist-ui/react';
 import { NextRouter } from 'next/router';
 
 import TransactionCell from '../components/TransactionCell';
@@ -10,6 +10,7 @@ import {
   typeTranslations,
 } from '../lib/translations';
 import { TransactionType } from '../server/models/Transaction';
+import TimelineChart from './Charts/TimelineChart';
 
 const BttnsStyle = css({
   display: 'flex',
@@ -32,6 +33,7 @@ const BttnsStyle = css({
       justifyContent: 'space-between',
       '.BttnDrop': {
         width: '60%',
+        justifyContent: 'flex-end',
       },
     },
   },
@@ -55,6 +57,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ router }) => {
   const [filterSelection, setFilterSelection] = useState('');
 
   const categoryTranslations = {
+    all: 'Ninguno',
     ...incomeCategoriesTranslations,
     ...expenseCategoriesTranslations,
   };
@@ -95,66 +98,68 @@ const TransactionList: React.FC<TransactionListProps> = ({ router }) => {
 
   return (
     <>
+      <TimelineChart type='count' />
       <div css={BttnsStyle}>
         <div className='Bttn'>
           <h3>Filtrar por:</h3>
-          <ButtonDropdown className='BttnDrop'>
+          <Select className='BttnDrop' value='Ninguno'>
             {categories.map(([category, translation]) => (
-              <ButtonDropdown.Item
-                type='success'
+              <Select.Option
+                value={`${translation}`}
                 key={category}
-                onClick={() => {
+                onClickCapture={() => {
+                  console.log(category);
                   setFilterBy('category');
-                  setFilterSelection(category);
+                  setFilterSelection(category === 'all' ? '' : category);
                 }}
               >
-                Por {translation}
-              </ButtonDropdown.Item>
+                {translation}
+              </Select.Option>
             ))}
-          </ButtonDropdown>
+          </Select>
         </div>
         <div className='Bttn'>
           <h3>Ordenar por:</h3>
-          <ButtonDropdown className='BttnDrop'>
-            <ButtonDropdown.Item
-              type='success'
-              onClick={() => setSortBy('date')}
+          <Select className='BttnDrop' value='Fecha'>
+            <Select.Option
+              value='Fecha'
+              onClickCapture={() => setSortBy('date')}
             >
-              Por Fecha
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item
-              type='success'
-              onClick={() => setSortBy('amount')}
+              Fecha
+            </Select.Option>
+            <Select.Option
+              value='Monto'
+              onClickCapture={() => setSortBy('amount')}
             >
-              Por Monto
-            </ButtonDropdown.Item>
-          </ButtonDropdown>
+              Monto
+            </Select.Option>
+          </Select>
         </div>
         <div className='Bttn'>
           <h3>Mostrar:</h3>
-          <ButtonDropdown className='BttnDrop'>
+          <Select className='BttnDrop' value='Ambos'>
             {types.map(([type, translation]) => (
-              <ButtonDropdown.Item
-                type='success'
+              <Select.Option
+                value={`Solo ${translation}s`}
                 key={type}
-                onClick={() => {
+                onClickCapture={() => {
                   setFilterBy('type');
                   setFilterSelection(type.toLowerCase());
                 }}
               >
                 Solo {translation}s
-              </ButtonDropdown.Item>
+              </Select.Option>
             ))}
-            <ButtonDropdown.Item
-              type='success'
-              onClick={() => {
+            <Select.Option
+              value='Ambos'
+              onClickCapture={() => {
                 setFilterBy('type');
                 setFilterSelection('');
               }}
             >
               Ambos
-            </ButtonDropdown.Item>
-          </ButtonDropdown>
+            </Select.Option>
+          </Select>
         </div>
       </div>
 
