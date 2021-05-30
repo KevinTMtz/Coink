@@ -42,8 +42,7 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
           ? Math.max(...resBody.expenseAmounts, ...resBody.incomeAmounts)
           : Math.max(...resBody.expenseCounts, ...resBody.incomeCounts);
       const magnitude = Math.floor(Math.log10(maxNumber));
-      const chartLimit =
-        10 ** magnitude * Math.ceil(maxNumber / 10 ** magnitude);
+      const chartLimit = 5 ** magnitude * Math.ceil(maxNumber / 5 ** magnitude);
       setOptions({
         chart: {
           type: 'bar',
@@ -81,10 +80,8 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
           min: -1 * chartLimit,
           max: chartLimit,
           labels: {
-            formatter:
-              type === 'amount'
-                ? (val: number) => formatAmount(val)
-                : undefined,
+            formatter: (val: number) =>
+              type === 'amount' ? formatAmount(val) : val.toString(),
           },
         },
         xaxis: {
@@ -104,7 +101,7 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
           options={options}
           series={series}
           type='bar'
-          width='100%'
+          width='99%'
           height={320}
         />
       )}

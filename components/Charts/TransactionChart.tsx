@@ -36,7 +36,8 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
       const resExpenses = await fetch(`/api/stats/${type}`);
       const resBody = (await resExpenses.json()) as DataPoint[];
 
-      setSeries(resBody.map((datapoint) => datapoint.amount));
+      const seriesData = resBody.map((datapoint) => datapoint.amount);
+      setSeries(seriesData.length > 0 ? seriesData : [0]);
 
       setOptions({
         title: {
@@ -62,11 +63,18 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
             },
           },
         ],
-        labels: resBody.map((datapoint) =>
-          type === 'incomes'
-            ? incomeCategoriesTranslations[datapoint._id as IncomeCategory]
-            : expenseCategoriesTranslations[datapoint._id as ExpenseCategory],
-        ),
+        labels:
+          seriesData.length > 0
+            ? resBody.map((datapoint) =>
+                type === 'incomes'
+                  ? incomeCategoriesTranslations[
+                      datapoint._id as IncomeCategory
+                    ]
+                  : expenseCategoriesTranslations[
+                      datapoint._id as ExpenseCategory
+                    ],
+              )
+            : [''],
         plotOptions: {
           pie: {
             donut: {
@@ -102,7 +110,7 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
           options={options}
           series={series}
           type='donut'
-          width='100%'
+          width='99%'
           height={300}
         />
       )}
