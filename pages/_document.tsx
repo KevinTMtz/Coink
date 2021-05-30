@@ -7,6 +7,10 @@ class MyDocument extends Document {
     return (
       <Html lang='en' style={{ padding: 0, margin: 0 }}>
         <Head>
+          <meta
+            name='viewport'
+            content='width=device-width, initial-scale=1.0'
+          />
           <meta name='description' content='Personal financial manager' />
           <link rel='icon' href='/favicon.ico' />
           <link rel='preconnect' href='https://fonts.gstatic.com' />

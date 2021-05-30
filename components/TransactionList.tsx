@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 /** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
-import { ButtonDropdown, Loading } from '@geist-ui/react';
+import { ButtonDropdown, Loading, Spacer } from '@geist-ui/react';
 import { NextRouter } from 'next/router';
 
 import TransactionCell from '../components/TransactionCell';
@@ -160,7 +160,10 @@ const TransactionList: React.FC<TransactionListProps> = ({ router }) => {
 
       <div css={ListStyle}>
         {isLoading ? (
-          <Loading type='success' size='large' />
+          <>
+            <Spacer />
+            <Loading type='success' size='large' />
+          </>
         ) : (
           data.map((element) => (
             <TransactionCell

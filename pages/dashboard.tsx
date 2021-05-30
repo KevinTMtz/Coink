@@ -1,6 +1,6 @@
 import React from 'react';
 /** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
-import { Button, Card } from '@geist-ui/react';
+import { Button, Spacer, Tabs } from '@geist-ui/react';
 import { Plus } from '@geist-ui/react-icons';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -10,7 +10,7 @@ import TimelineChart from '../components/Charts/TimelineChart';
 import TransactionChart from '../components/Charts/TransactionChart';
 import TransactionList from '../components/TransactionList';
 
-const ControlsStyle = css({
+const ContainerStyle = css({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -22,6 +22,11 @@ const ControlsStyle = css({
   },
 });
 
+const TabsStyle = css({
+  width: '100% !important',
+  header: { justifyContent: 'center' },
+});
+
 const DashboardPage: React.FC = () => {
   const router = useRouter();
 
@@ -30,28 +35,34 @@ const DashboardPage: React.FC = () => {
       <Head>
         <title>Dashboard</title>
       </Head>
+      <Spacer />
       <Title>Coink</Title>
-      <div>
-        <div css={ControlsStyle}>
-          <Card hoverable width='100%' style={{ margin: '12px 0px' }}>
+      <div css={ContainerStyle}>
+        <Button
+          onClick={() => router.push('/add-transaction')}
+          icon={<Plus />}
+          type='success-light'
+          size='large'
+          style={{ width: '100%' }}
+        >
+          Añadir
+        </Button>
+        <Spacer />
+
+        <Tabs initialValue='1' css={TabsStyle}>
+          <Tabs.Item label='Gráficas' value='1'>
+            <Spacer />
             <TimelineChart type='amount' />
             <TimelineChart type='count' />
             <TransactionChart type='incomes' />
             <TransactionChart type='expenses' />
-          </Card>
+            <Spacer y={3} />
+          </Tabs.Item>
 
-          <Button
-            onClick={() => router.push('/add-transaction')}
-            icon={<Plus />}
-            type='success-light'
-            size='large'
-            style={{ width: '100%' }}
-          >
-            Añadir
-          </Button>
-
-          <TransactionList router={router} />
-        </div>
+          <Tabs.Item label='Tus transacciones' value='2'>
+            <TransactionList router={router} />
+          </Tabs.Item>
+        </Tabs>
       </div>
     </>
   );
