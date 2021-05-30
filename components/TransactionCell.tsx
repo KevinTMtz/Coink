@@ -2,7 +2,6 @@ import React from 'react';
 /** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
 import { Card } from '@geist-ui/react';
 import { ChevronRight } from '@geist-ui/react-icons';
-import { NextRouter } from 'next/router';
 
 import { formatAmount } from '../lib/formatAmount';
 import TransactionIcon from './TransactionIcon';
@@ -42,14 +41,19 @@ const NoMargin = css({ margin: '0px' });
 
 interface TransactionProps {
   data: TransactionType;
-  router: NextRouter;
+  dateFormatter: Intl.DateTimeFormat;
+  onClick: React.MouseEventHandler<any>;
 }
 
-const TransactionCell: React.FC<TransactionProps> = ({ data, router }) => (
+const TransactionCell: React.FC<TransactionProps> = ({
+  data,
+  dateFormatter,
+  onClick,
+}) => (
   <Card
     hoverable
     type='lite'
-    onClick={() => router.push(`/edit-transaction/${data._id}`)}
+    onClick={onClick}
     style={{
       width: '100%',
       margin: '8px auto',
@@ -62,9 +66,7 @@ const TransactionCell: React.FC<TransactionProps> = ({ data, router }) => (
           <TransactionIcon type={data.type} category={data.category} />
           <div>
             <h2 style={{ margin: '0 0 6px 0' }}>{data.name}</h2>
-            <h3 css={NoMargin}>
-              {new Date(data.date).toISOString().split('T')[0]}
-            </h3>
+            <h3 css={NoMargin}>{dateFormatter.format(new Date(data.date))}</h3>
           </div>
         </div>
         <div css={InfoStyle}>
