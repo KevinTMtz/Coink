@@ -11,6 +11,7 @@ import {
   Text,
   Textarea,
   Select,
+  Modal,
 } from '@geist-ui/react';
 import ReactDatePicker from 'react-datepicker';
 import isLength from 'validator/lib/isLength';
@@ -70,6 +71,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   router,
 }) => {
   const [errorMsg, setErrorMsg] = useState<string>('');
+
+  const [state, setState] = useState(false);
+  const handler = () => setState(true);
+
+  const closeHandler = () => {
+    setState(false);
+  };
 
   const categoriesMap: { [key: string]: string } =
     transaction.type === 'income'
@@ -271,12 +279,33 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   ghost
                   size='large'
                   style={{ width: '100%' }}
-                  onClick={deleteTransaction}
+                  onClick={handler}
                 >
                   Eliminar{' '}
                   {transaction.type === 'income' ? ' ingreso' : ' gasto'}
                 </Button>
               </Row>
+              <Modal open={state} onClose={closeHandler}>
+                <Modal.Title>
+                  Eliminar{' '}
+                  {transaction.type === 'income' ? ' ingreso' : ' gasto'}
+                </Modal.Title>
+                <Modal.Content>
+                  <p>
+                    ¿Estás seguro de que quieres eliminar este
+                    {transaction.type === 'income' ? ' ingreso' : ' gasto'}?
+                  </p>
+                </Modal.Content>
+                <Modal.Action passive onClick={() => setState(false)}>
+                  Cancelar
+                </Modal.Action>
+                <Modal.Action
+                  onClick={() => deleteTransaction()}
+                  style={{ color: 'red' }}
+                >
+                  Eliminar
+                </Modal.Action>
+              </Modal>
             </>
           )}
 
