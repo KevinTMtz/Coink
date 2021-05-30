@@ -4,6 +4,7 @@ import { Card } from '@geist-ui/react';
 import { ChevronRight } from '@geist-ui/react-icons';
 import { NextRouter } from 'next/router';
 
+import { formatAmount } from '../lib/formatAmount';
 import TransactionIcon from './TransactionIcon';
 import { TransactionType } from '../server/models/Transaction';
 
@@ -76,11 +77,7 @@ const TransactionCell: React.FC<TransactionProps> = ({ data, router }) => (
               textOverflow: 'ellipsis',
             }}
           >
-            {data.type === 'expense' && '-'} ${' '}
-            {data.amount
-              .toFixed(2)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            {formatAmount(data.amount, data.type === 'expense')}
           </h2>
           <ChevronRight color='black' size={36} />
         </div>

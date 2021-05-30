@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
+import dynamic from 'next/dynamic';
+
+import { formatAmount } from '../../lib/formatAmount';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -35,10 +37,13 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
         },
       ]);
 
-      const maxTransaction =
+      const maxNumber =
         type === 'amount'
           ? Math.max(...resBody.expenseAmounts, ...resBody.incomeAmounts)
           : Math.max(...resBody.expenseCounts, ...resBody.incomeCounts);
+      const magnitude = Math.floor(Math.log10(maxNumber));
+      const chartLimit =
+        10 ** magnitude * Math.ceil(maxNumber / 10 ** magnitude);
       setOptions({
         chart: {
           type: 'bar',
@@ -73,13 +78,12 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
           },
         },
         yaxis: {
-          min: -1 * maxTransaction,
-          max: maxTransaction,
+          min: -1 * chartLimit,
+          max: chartLimit,
           labels: {
             formatter:
               type === 'amount'
-                ? (val: number) =>
-                    `$ ${val.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+                ? (val: number) => formatAmount(val)
                 : undefined,
           },
         },
@@ -89,7 +93,7 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
             return `${date.getMonth() + 1}-${date.getFullYear()}`;
           }),
         },
-      } as ApexOptions);
+      });
     })();
   }, []);
 

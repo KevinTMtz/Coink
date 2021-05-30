@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
+import dynamic from 'next/dynamic';
 
+import { formatAmount } from '../../lib/formatAmount';
 import {
   expenseCategoriesTranslations,
   incomeCategoriesTranslations,
@@ -19,6 +20,12 @@ interface ChartProps {
   type: 'incomes' | 'expenses';
 }
 
+interface DataPoint {
+  _id: string;
+  count: number;
+  amount: number;
+}
+
 const TransactionChart: React.FC<ChartProps> = ({ type }) => {
   const [series, setSeries] = useState<number[]>();
 
@@ -27,14 +34,9 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
   useEffect(() => {
     (async () => {
       const resExpenses = await fetch(`/api/stats/${type}`);
-      let resBody = await resExpenses.json();
+      const resBody = (await resExpenses.json()) as DataPoint[];
 
-      setSeries(
-        resBody.map(
-          (expense: { _id: string; count: number; amount: number }) =>
-            expense.amount,
-        ),
-      );
+      setSeries(resBody.map((datapoint) => datapoint.amount));
 
       setOptions({
         title: {
@@ -60,11 +62,10 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
             },
           },
         ],
-        labels: resBody.map(
-          (expense: { _id: string; count: number; amount: number }) =>
-            type === 'incomes'
-              ? incomeCategoriesTranslations[expense._id as IncomeCategory]
-              : expenseCategoriesTranslations[expense._id as ExpenseCategory],
+        labels: resBody.map((datapoint) =>
+          type === 'incomes'
+            ? incomeCategoriesTranslations[datapoint._id as IncomeCategory]
+            : expenseCategoriesTranslations[datapoint._id as ExpenseCategory],
         ),
         plotOptions: {
           pie: {
@@ -75,13 +76,11 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
                   showAlways: true,
                   show: true,
                   formatter: (val: { globals: { seriesTotals: number[] } }) => {
-                    return `$ ${val.globals.seriesTotals
-                      .reduce(
-                        (sum: number, current: number) => sum + current,
-                        0,
-                      )
-                      .toFixed(2)
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+                    const sum = val.globals.seriesTotals.reduce(
+                      (sum, val) => sum + val,
+                      0,
+                    );
+                    return formatAmount(sum);
                   },
                 },
                 value: {
@@ -92,7 +91,7 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
             },
           },
         },
-      } as ApexOptions);
+      });
     })();
   }, []);
 
