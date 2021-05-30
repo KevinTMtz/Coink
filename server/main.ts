@@ -66,7 +66,7 @@ const handle = app.getRequestHandler();
   // Transactions router
   server.use('/api/transaction', transRouter);
 
-  // Transactions router
+  // Statistics router
   server.use('/api/stats', statsRouter);
 
   // Handle routes with next.js
