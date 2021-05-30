@@ -75,9 +75,12 @@ const DashboardPage: React.FC = () => {
   const categories = Object.entries(categoryTranslations);
   const types = Object.entries(typeTranslations);
 
-  useEffect(() => {
-    organize();
-  }, []);
+  const dateFormatter = new Intl.DateTimeFormat('es-MX', {
+    day: 'numeric',
+    weekday: 'long',
+    month: 'long',
+    year: 'numeric',
+  });
 
   const organize = async () => {
     const body = {
@@ -94,9 +97,15 @@ const DashboardPage: React.FC = () => {
     setData(resBody);
     setLoading(false);
   };
+
+  useEffect(() => {
+    organize();
+  }, []);
+
   useEffect(() => {
     organize();
   }, [sortBy, filterBy, filterSelection]);
+
   return (
     <>
       <Head>
@@ -192,8 +201,11 @@ const DashboardPage: React.FC = () => {
               data.map((element) => (
                 <TransactionCell
                   data={element}
+                  dateFormatter={dateFormatter}
                   key={element._id}
-                  router={router}
+                  onClick={() =>
+                    router.push(`/edit-transaction/${element._id}`)
+                  }
                 />
               ))
             )}
