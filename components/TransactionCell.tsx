@@ -17,13 +17,7 @@ const CardStyle = css({
   width: '100%',
   cursor: 'pointer',
   '@media (max-width: 600px)': {
-    h2: {
-      fontSize: '5vw',
-      width: 'auto',
-    },
-    h3: {
-      fontSize: '4vw',
-    },
+    h2: { width: 'auto' },
   },
 });
 
@@ -32,9 +26,6 @@ const InfoStyle = css({
   alignItems: 'center',
   textAlign: 'left',
   boxSizing: 'border-box',
-  '@media (max-width: 600px)': {
-    maxWidth: '50%',
-  },
 });
 
 const NoMargin = css({ margin: '0px' });
