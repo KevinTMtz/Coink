@@ -67,6 +67,10 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
             type === 'amount'
               ? 'Ingreso y gasto mensual'
               : 'Conteo de gastos e ingresos',
+          style: {
+            fontSize: '16',
+            fontWeight: 'bold',
+          },
         },
         yaxis: {
           min: -1 * maxTransaction,
@@ -74,7 +78,8 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
           labels: {
             formatter:
               type === 'amount'
-                ? (val: number) => `$ ${val.toFixed(2)}`
+                ? (val: number) =>
+                    `$ ${val.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                 : undefined,
           },
         },
@@ -95,7 +100,7 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
           options={options}
           series={series}
           type='bar'
-          width={500}
+          width='100%'
           height={320}
         />
       )}

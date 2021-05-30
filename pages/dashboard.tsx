@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Button, ButtonDropdown, Grid, Loading } from '@geist-ui/react';
+import { Button, ButtonDropdown, Card, Loading } from '@geist-ui/react';
 
 import Title from '../components/Title';
 import TransactionCell from '../components/TransactionCell';
@@ -13,24 +13,43 @@ import {
 import { TransactionType } from '../server/models/Transaction';
 import { Plus } from '@geist-ui/react-icons';
 /** @jsxImportSource @emotion/react */ import { css } from '@emotion/react';
+import TimelineChart from '../components/Charts/TimelineChart';
+import TransactionChart from '../components/Charts/TransactionChart';
 
 const ControlsStyle = css({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
+  margin: 'auto',
+  width: '70%',
+  '@media (max-width: 600px)': {
+    width: '95%',
+  },
 });
 
 const BttnsStyle = css({
   display: 'flex',
-  width: '90%',
+  width: '100%',
+  boxSizing: 'border-box',
   justifyContent: 'space-evenly',
   '.Bttn': {
     display: 'flex',
-    margin: '1em',
+    flexDirection: 'column',
+    margin: '8px',
     alignItems: 'center',
-    h3: {
-      marginRight: '2em',
+  },
+
+  '@media (max-width: 600px)': {
+    flexDirection: 'column',
+    marginTop: '8px',
+    '.Bttn': {
+      flexDirection: 'row',
+      margin: '0',
+      justifyContent: 'space-between',
+      '.BttnDrop': {
+        width: '60%',
+      },
     },
   },
 });
@@ -38,6 +57,7 @@ const BttnsStyle = css({
 const ListStyle = css({
   display: 'flex',
   flexDirection: 'column',
+  width: '100%',
 });
 
 const DashboardPage: React.FC = () => {
@@ -82,24 +102,33 @@ const DashboardPage: React.FC = () => {
       <Head>
         <title>Dashboard</title>
       </Head>
-      <Title>Dashboard</Title>
+      <Title>Coink</Title>
       <div>
         <div css={ControlsStyle}>
+          <Card hoverable width='100%' style={{ margin: '12px 0px' }}>
+            <TimelineChart type='amount' />
+            <TimelineChart type='count' />
+            <TransactionChart type='incomes' />
+            <TransactionChart type='expenses' />
+          </Card>
+
           <Button
             onClick={() => router.push('/add-transaction')}
             icon={<Plus />}
-            type='success'
-            ghost
+            type='success-light'
             size='large'
+            style={{ width: '100%' }}
           >
             Añadir
           </Button>
+
           <div css={BttnsStyle}>
             <div className='Bttn'>
               <h3>Filtrar por:</h3>
-              <ButtonDropdown>
+              <ButtonDropdown className='BttnDrop'>
                 {categories.map(([category, translation]) => (
                   <ButtonDropdown.Item
+                    type='success'
                     key={category}
                     onClick={() => {
                       setFilterBy('category');
@@ -113,20 +142,27 @@ const DashboardPage: React.FC = () => {
             </div>
             <div className='Bttn'>
               <h3>Ordenar por:</h3>
-              <ButtonDropdown>
-                <ButtonDropdown.Item onClick={() => setSortBy('date')}>
+              <ButtonDropdown className='BttnDrop'>
+                <ButtonDropdown.Item
+                  type='success'
+                  onClick={() => setSortBy('date')}
+                >
                   Por Fecha
                 </ButtonDropdown.Item>
-                <ButtonDropdown.Item onClick={() => setSortBy('amount')}>
+                <ButtonDropdown.Item
+                  type='success'
+                  onClick={() => setSortBy('amount')}
+                >
                   Por Monto
                 </ButtonDropdown.Item>
               </ButtonDropdown>
             </div>
             <div className='Bttn'>
               <h3>Mostrar:</h3>
-              <ButtonDropdown>
+              <ButtonDropdown className='BttnDrop'>
                 {types.map(([type, translation]) => (
                   <ButtonDropdown.Item
+                    type='success'
                     key={type}
                     onClick={() => {
                       setFilterBy('type');
@@ -137,6 +173,7 @@ const DashboardPage: React.FC = () => {
                   </ButtonDropdown.Item>
                 ))}
                 <ButtonDropdown.Item
+                  type='success'
                   onClick={() => {
                     setFilterBy('type');
                     setFilterSelection('');
@@ -147,19 +184,20 @@ const DashboardPage: React.FC = () => {
               </ButtonDropdown>
             </div>
           </div>
-        </div>
-        <div css={ListStyle}>
-          {isLoading ? (
-            <Loading type='success' size='large' />
-          ) : (
-            data.map((element) => (
-              <TransactionCell
-                data={element}
-                key={element._id}
-                router={router}
-              />
-            ))
-          )}
+
+          <div css={ListStyle}>
+            {isLoading ? (
+              <Loading type='success' size='large' />
+            ) : (
+              data.map((element) => (
+                <TransactionCell
+                  data={element}
+                  key={element._id}
+                  router={router}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
     </>

@@ -16,6 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 interface IconProps {
+  type: string;
   category: string;
 }
 
@@ -33,11 +34,16 @@ const icons: { [key: string]: IconDefinition } = {
   other: faPiggyBank,
 };
 
-const TransactionIcon: React.FC<IconProps> = ({ category }) => (
+const TransactionIcon: React.FC<IconProps> = ({ type, category }) => (
   <FontAwesomeIcon
     icon={icons[category]}
     color='#AAA'
-    style={{ marginRight: '5em', width: '48px', height: '48px' }}
+    style={{
+      height: '36px',
+      width: '36px',
+      color: type === 'income' ? '#0070F3' : '#FF0000',
+      marginRight: '16px',
+    }}
   />
 );
 
