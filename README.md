@@ -8,18 +8,60 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/KevinTMtz/coink)
 ![Lines of code](https://tokei.rs/b1/github/KevinTMtz/coink?category=code)
 
-A simple application to keep track of your finances
+## Organiza tus finanzas
 
-Final project for Web Applications Development class. [You can find our presentation here](https://docs.google.com/presentation/d/1wIswKWDAteS3dQmHPtA0IAZ-UUVzKOucArsaG7dCCR4)
+- Administrar tu dinero puede ser tedioso, coink te ayuda a juntar todos tus gastos e ingresos en un solo lugar
+- Visualiza tus hábitos de gasto, tus hábitos de ahorro y tus ingresos fácilmente - sin complicadas hojas de cálculo
+- Nuestras herramientas están diseñadas para ayudarle a ver su dinero con claridad y tomar decisiones financieras
+- Regístrate en coink con sólo tu correo y disfruta de nuestro sitio web desde tu navegador o tu teléfono
 
-## Tech stack
+<br/>
 
-- Frontend: Next.js (React)
-- Backend: Express and Node.js
-- Database: MongoDB
+![Screenshots](./.github/images/previews.png)
 
-## Team
+Proyecto final para nuestra clase de desarrollo web. [Ve nuestra presentación aquí](https://docs.google.com/presentation/d/1wIswKWDAteS3dQmHPtA0IAZ-UUVzKOucArsaG7dCCR4)
 
-- Kevin Torres Martínez A01656257
-- Mario Emilio Jiménez Vizcaíno A01173359
-- Juan Sebastián Rodríguez Galarza A01656159
+## Tecnologías utilizadas
+
+- Frontend:
+
+  ![Next.js](https://img.shields.io/badge/-Next.js-black?style=flat-square&logo=next-dot-js)
+  ![React](https://img.shields.io/badge/-React-black?style=flat-square&logo=react)
+
+- Backend:
+
+  ![Express](https://img.shields.io/badge/-Express-black?style=flat-square&logo=Express)
+  ![Node.js](https://img.shields.io/badge/-Node.js-black?style=flat-square&logo=node-dot-js)
+
+- Database:
+
+  ![MongoDB](https://img.shields.io/badge/-MongoDB-black?style=flat-square&logo=mongodb)
+
+## Documentación
+
+Para generar y ejecutar la production build
+
+```shell
+yarn build
+yarn start
+```
+
+Para ejecutar como desarrollador
+
+```shell
+yarn dev
+```
+
+## Creadores
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/KevinTMtz"><img src="https://avatars.githubusercontent.com/u/44516784" width="100px;" alt=""/><br /><sub><b>Kevin Torres Martínez</b></sub></a><br />A01656257<br/></td>
+    <td align="center"><a href="https://github.com/MarioJim"><img src="https://avatars.githubusercontent.com/u/42523716" width="100px;" alt=""/><br /><sub><b>Emilio Jiménez Vizcaíno</b></sub></a><br />A01173359</td>
+    <td align="center"><a href="https://github.com/SebasRod23"><img src="https://avatars.githubusercontent.com/u/42384931" width="100px;" alt=""/><br /><sub><b>Sebastián Rodríguez Galarza</b></sub></a><br />A01656159</td>
+  </tr>
+</table>
+
+## Licencia
+
+Código publicado bajo [MIT License](https://github.com/kevintmtz/coink/blob/main/LICENSE).
