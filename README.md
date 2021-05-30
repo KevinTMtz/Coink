@@ -21,36 +21,52 @@
 
 Proyecto final para nuestra clase de desarrollo web. [Ve nuestra presentación aquí](https://docs.google.com/presentation/d/1wIswKWDAteS3dQmHPtA0IAZ-UUVzKOucArsaG7dCCR4)
 
-## Tecnologías utilizadas
+## Dependencias
 
-- Frontend:
+Para ejecutar el servidor de **coink** es necesario instalar y correr la base de datos MongoDB localmente.
 
+## Instalación y uso
+
+1.- Descargar el código fuente
+
+```
+$ git clone https://github.com/KevinTMtz/coink.git
+$ cd coink
+```
+
+2.- Instalar las dependencias de Node.js
+
+```
+$ yarn install
+```
+
+3.- Para ejecutar el servidor web es posible:
+
+- Generar y ejecutar una versión optimizada de producción
+
+```
+$ yarn build
+$ yarn start
+```
+
+- Ejecutar la versión de desarrollador
+
+```
+$ yarn dev
+```
+
+## Tecnologías
+
+- Frontend
   ![Next.js](https://img.shields.io/badge/-Next.js-black?style=flat-square&logo=next-dot-js)
   ![React](https://img.shields.io/badge/-React-black?style=flat-square&logo=react)
 
-- Backend:
-
+- Backend
   ![Express](https://img.shields.io/badge/-Express-black?style=flat-square&logo=Express)
   ![Node.js](https://img.shields.io/badge/-Node.js-black?style=flat-square&logo=node-dot-js)
 
-- Database:
-
+- Database
   ![MongoDB](https://img.shields.io/badge/-MongoDB-black?style=flat-square&logo=mongodb)
-
-## Documentación
-
-Para generar y ejecutar la production build
-
-```shell
-yarn build
-yarn start
-```
-
-Para ejecutar como desarrollador
-
-```shell
-yarn dev
-```
 
 ## Creadores
 
