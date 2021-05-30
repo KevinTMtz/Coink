@@ -13,8 +13,19 @@ const ContainerStyle = css({
   alignContent: 'center',
   width: '40%',
   height: '100vh',
-  '@media (max-width: 600px)': {
-    width: '95%',
+  '@media (max-width: 720px)': {
+    width: '60%',
+  },
+  '@media (max-width: 480px)': {
+    width: '90%',
+  },
+});
+
+const LoginButtonStyle = css({
+  width: '100% !important',
+  'div.text': {
+    fontSize: '1rem',
+    fontWeight: 400,
   },
 });
 
@@ -115,12 +126,7 @@ const LoginPage: React.FC = () => {
             </Text>
           )}
           <Spacer y={0.5} />
-          <Button
-            type='success-light'
-            size='large'
-            style={{ width: '100%' }}
-            onClick={login}
-          >
+          <Button type='success-light' css={LoginButtonStyle} onClick={login}>
             {view === 'login' ? 'Iniciar sesión' : 'Regístrate'}
           </Button>
           <Spacer y={0.5} />
