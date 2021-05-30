@@ -99,6 +99,15 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     }
   };
 
+  const deleteTransaction = async () => {
+    const res = await fetch('/api/transaction/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (res.status === 200) cancelOperation();
+  };
+
   const cancelOperation = () => router.back();
 
   return (
@@ -253,6 +262,24 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               {transaction.type === 'income' ? ' ingreso' : ' gasto'}
             </Button>
           </Row>
+          {action === 'edit' && (
+            <>
+              <Spacer y={0.5} />
+              <Row justify='center'>
+                <Button
+                  type='error'
+                  ghost
+                  size='large'
+                  style={{ width: '100%' }}
+                  onClick={deleteTransaction}
+                >
+                  Eliminar{' '}
+                  {transaction.type === 'income' ? ' ingreso' : ' gasto'}
+                </Button>
+              </Row>
+            </>
+          )}
+
           <Spacer y={0.5} />
           <Row justify='center'>
             <Button
