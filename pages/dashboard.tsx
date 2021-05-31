@@ -30,6 +30,13 @@ const TabsStyle = css({
 const DashboardPage: React.FC = () => {
   const router = useRouter();
 
+  const logout = async () => {
+    const res = await fetch('/api/auth/logout');
+    if (res.ok) {
+      return router.push('/login');
+    }
+  };
+
   return (
     <>
       <Head>
@@ -62,6 +69,16 @@ const DashboardPage: React.FC = () => {
             <TransactionList router={router} />
           </Tabs.Item>
         </Tabs>
+
+        <Button
+          onClick={logout}
+          type='error-light'
+          size='large'
+          ghost
+          style={{ width: '100%', marginBottom: '16px' }}
+        >
+          Cerrar sesión
+        </Button>
       </div>
     </>
   );
