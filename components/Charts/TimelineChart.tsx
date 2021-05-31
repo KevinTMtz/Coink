@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
+import { NextRouter } from 'next/router';
 
 import { formatAmount } from '../../lib/formatAmount';
 
@@ -10,9 +11,10 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), {
 
 interface ChartProps {
   type: 'amount' | 'count';
+  router: NextRouter;
 }
 
-const TimelineChart: React.FC<ChartProps> = ({ type }) => {
+const TimelineChart: React.FC<ChartProps> = ({ type, router }) => {
   const [series, setSeries] = useState<{ name: string; data: number[] }[]>();
 
   const [options, setOptions] = useState<ApexOptions>();
@@ -20,6 +22,9 @@ const TimelineChart: React.FC<ChartProps> = ({ type }) => {
   useEffect(() => {
     (async () => {
       const resTimeline = await fetch('/api/stats/timeline');
+      if (resTimeline.status === 401) {
+        return router.replace('/login');
+      }
       const resBody = await resTimeline.json();
 
       setSeries([

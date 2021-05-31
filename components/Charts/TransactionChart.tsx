@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
+import { NextRouter } from 'next/router';
 
 import { formatAmount } from '../../lib/formatAmount';
 import {
@@ -18,6 +19,7 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), {
 
 interface ChartProps {
   type: 'incomes' | 'expenses';
+  router: NextRouter;
 }
 
 interface DataPoint {
@@ -26,7 +28,7 @@ interface DataPoint {
   amount: number;
 }
 
-const TransactionChart: React.FC<ChartProps> = ({ type }) => {
+const TransactionChart: React.FC<ChartProps> = ({ type, router }) => {
   const [series, setSeries] = useState<number[]>();
 
   const [options, setOptions] = useState<ApexOptions>();
@@ -34,6 +36,9 @@ const TransactionChart: React.FC<ChartProps> = ({ type }) => {
   useEffect(() => {
     (async () => {
       const resExpenses = await fetch(`/api/stats/${type}`);
+      if (resExpenses.status === 401) {
+        return router.replace('/login');
+      }
       const resBody = (await resExpenses.json()) as DataPoint[];
 
       const seriesData = resBody.map((datapoint) => datapoint.amount);
