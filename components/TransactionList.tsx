@@ -82,6 +82,9 @@ const TransactionList: React.FC<TransactionListProps> = ({ router }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+    if (res.status === 401) {
+      return router.replace('/login');
+    }
     const resBody = await res.json();
     setData(resBody);
     setLoading(false);
@@ -98,7 +101,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ router }) => {
 
   return (
     <>
-      <TimelineChart type='count' />
+      <TimelineChart type='count' router={router} />
       <div css={BttnsStyle}>
         <div className='Bttn'>
           <h3>Filtrar por:</h3>

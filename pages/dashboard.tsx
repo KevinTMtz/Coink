@@ -52,9 +52,9 @@ const DashboardPage: React.FC = () => {
         <Tabs initialValue='1' css={TabsStyle}>
           <Tabs.Item label='Tablero' value='1'>
             <Spacer />
-            <TimelineChart type='amount' />
-            <TransactionChart type='incomes' />
-            <TransactionChart type='expenses' />
+            <TimelineChart type='amount' router={router} />
+            <TransactionChart type='incomes' router={router} />
+            <TransactionChart type='expenses' router={router} />
             <Spacer y={3} />
           </Tabs.Item>
 
